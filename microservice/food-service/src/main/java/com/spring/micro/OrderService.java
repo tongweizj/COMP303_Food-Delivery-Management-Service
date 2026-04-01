@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @Service
 public class OrderService {
 	private final OrderRepository orderRepository;
@@ -18,20 +21,21 @@ public class OrderService {
 		this.orderRepository = orderRepository;
 	}
 
-	public List<Order> getAll() {
+	public Flux<Order> getAll() {
 		return orderRepository.findAll();
 	}
 
-	public Order getById(long id) {
-		return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found: " + id));
+	public Mono<Order> getById(long id) {
+		return orderRepository.findById(id);
 	}
 
-	public Order create(Order o) {
+	public Mono<Order> create(Order o) {
 		return orderRepository.save(o);
 	}
 
-	public Order update(long id, Order o) {
-		Order updated = orderRepository.update(id, o);
+	public Mono<Order> update(long id, Order o) {
+		o.setOrderId(id);
+		Mono<Order> updated = orderRepository.save(o);
 		if (updated == null) {
 			throw new RuntimeException("Order not found: " + id);
 		}
@@ -39,6 +43,6 @@ public class OrderService {
 	}
 
 	public void delete(long id) {
-		orderRepository.delete(id);
+		orderRepository.deleteById(id);
 	}
 }

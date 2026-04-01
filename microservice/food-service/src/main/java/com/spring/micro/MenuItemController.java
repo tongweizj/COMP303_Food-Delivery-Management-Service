@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/menuitems")
 public class MenuItemController {
@@ -26,25 +29,25 @@ public class MenuItemController {
 
 	// 查所有
 	@GetMapping
-	public List<MenuItem> getAll() {
+	public Flux<MenuItem> getAll() {
 		return menuItemService.getAll();
 	}
 
 	// 查单个
 	@GetMapping("/{id}")
-	public MenuItem getById(@PathVariable long id) {
+	public Mono<MenuItem> getById(@PathVariable long id) {
 		return menuItemService.getById(id);
 	}
 
 	// 增
 	@PostMapping
-	public MenuItem create(@RequestBody MenuItem m) {
+	public Mono<MenuItem> create(@RequestBody MenuItem m) {
 		return menuItemService.create(m);
 	}
 
 	// 改
 	@PutMapping("/{id}")
-	public MenuItem updateById(@PathVariable long id, @RequestBody MenuItem m) {
+	public Mono<MenuItem> updateById(@PathVariable long id, @RequestBody MenuItem m) {
 		System.out.println("Updating menuItem: " + id);
 		return menuItemService.update(id, m);
 	}

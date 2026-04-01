@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @Service
 public class MenuItemService {
 	private final MenuItemRepository menuItemReposityory;
@@ -17,20 +20,21 @@ public class MenuItemService {
 		this.menuItemReposityory = menuItemReposityory;
 	}
 
-	public List<MenuItem> getAll() {
+	public Flux<MenuItem> getAll() {
 		return menuItemReposityory.findAll();
 	}
 
-	public MenuItem getById(long id) {
-		return menuItemReposityory.findById(id).orElseThrow(() -> new RuntimeException("MenuItem not found: " + id));
+	public Mono<MenuItem> getById(long id) {
+		return menuItemReposityory.findById(id);
 	}
 
-	public MenuItem create(MenuItem m) {
+	public Mono<MenuItem> create(MenuItem m) {
 		return menuItemReposityory.save(m);
 	}
 
-	public MenuItem update(long id, MenuItem m) {
-		MenuItem updated = menuItemReposityory.update(id, m);
+	public Mono<MenuItem> update(long id, MenuItem m) {
+		m.setMenuItemId(id);
+		Mono<MenuItem> updated = menuItemReposityory.save(m);
 		if (updated == null) {
 			throw new RuntimeException("MenuItem not found: " + id);
 		}
@@ -38,6 +42,6 @@ public class MenuItemService {
 	}
 
 	public void delete(long id) {
-		menuItemReposityory.delete(id);
+		menuItemReposityory.deleteById(id);
 	}
 }

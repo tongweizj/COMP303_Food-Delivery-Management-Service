@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/restaurants") // 复数形式更规范
 public class RestaurantController {
@@ -28,25 +31,25 @@ public class RestaurantController {
 
 	// 查所有
 	@GetMapping
-	public List<Restaurant> getAll() {
+	public Flux<Restaurant> getAll() {
 		return restaurantService.getAll();
 	}
 
 	// 查单个
 	@GetMapping("/{id}")
-	public Restaurant getById(@PathVariable long id) {
+	public Mono<Restaurant> getById(@PathVariable long id) {
 		return restaurantService.getById(id);
 	}
 
 	// 增
 	@PostMapping
-	public Restaurant create(@RequestBody Restaurant restaurant) {
+	public Mono<Restaurant> create(@RequestBody Restaurant restaurant) {
 		return restaurantService.create(restaurant);
 	}
 
 	// 改
 	@PutMapping("/{id}")
-	public Restaurant updateById(@PathVariable long id, @RequestBody Restaurant restaurant) {
+	public Mono<Restaurant> updateById(@PathVariable long id, @RequestBody Restaurant restaurant) {
 		System.out.println("Updating restaurant: " + id);
 		return restaurantService.update(id, restaurant);
 	}

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -28,25 +31,25 @@ public class OrderController {
 
 	// 查所有
 	@GetMapping
-	public List<Order> getAll() {
+	public Flux<Order> getAll() {
 		return orderService.getAll();
 	}
 
 	// 查单个
 	@GetMapping("/{id}")
-	public Order getById(@PathVariable long id) {
+	public Mono<Order> getById(@PathVariable long id) {
 		return orderService.getById(id);
 	}
 
 	// 增
 	@PostMapping
-	public Order create(@RequestBody Order order) {
+	public Mono<Order> create(@RequestBody Order order) {
 		return orderService.create(order);
 	}
 
 	// 改
 	@PutMapping("/{id}")
-	public Order updateById(@PathVariable long id, @RequestBody Order order) {
+	public Mono<Order> updateById(@PathVariable long id, @RequestBody Order order) {
 		System.out.println("Updating order: " + id);
 		return orderService.update(id, order);
 	}
