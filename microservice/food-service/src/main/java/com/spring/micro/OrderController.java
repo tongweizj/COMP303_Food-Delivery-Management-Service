@@ -1,0 +1,60 @@
+package com.spring.micro;
+
+/* Author: Wei Tong 301034450
+ * COMP 303 - Enterprise App Development
+ * Assign 3
+ */
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+	private final OrderService orderService;
+
+	public OrderController(OrderService orderService) {
+		this.orderService = orderService;
+	}
+
+	// 查所有
+	@GetMapping
+	public List<Order> getAll() {
+		return orderService.getAll();
+	}
+
+	// 查单个
+	@GetMapping("/{id}")
+	public Order getById(@PathVariable long id) {
+		return orderService.getById(id);
+	}
+
+	// 增
+	@PostMapping
+	public Order create(@RequestBody Order order) {
+		return orderService.create(order);
+	}
+
+	// 改
+	@PutMapping("/{id}")
+	public Order updateById(@PathVariable long id, @RequestBody Order order) {
+		System.out.println("Updating order: " + id);
+		return orderService.update(id, order);
+	}
+
+	// 删
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable long id) {
+		System.out.println("Deleting order: " + id);
+		orderService.delete(id);
+	}
+}
