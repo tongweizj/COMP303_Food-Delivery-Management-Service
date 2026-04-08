@@ -20,7 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/restaurants") // 复数形式更规范
 public class RestaurantController {
 
 	private final RestaurantService restaurantService;
@@ -30,32 +29,32 @@ public class RestaurantController {
 	}
 
 	// 查所有
-	@GetMapping
+	@GetMapping("/api/restaurants") 
 	public Flux<Restaurant> getAll() {
 		return restaurantService.getAll();
 	}
 
 	// 查单个
-	@GetMapping("/{id}")
+	@GetMapping("/api/restaurant/{id}")
 	public Mono<Restaurant> getById(@PathVariable long id) {
 		return restaurantService.getById(id);
 	}
 
 	// 增
-	@PostMapping
+	@PostMapping("/api/restaurant")
 	public Mono<Restaurant> create(@RequestBody Restaurant restaurant) {
 		return restaurantService.create(restaurant);
 	}
 
 	// 改
-	@PutMapping("/{id}")
+	@PutMapping("/api/restaurant/{id}")
 	public Mono<Restaurant> updateById(@PathVariable long id, @RequestBody Restaurant restaurant) {
 		System.out.println("Updating restaurant: " + id);
 		return restaurantService.update(id, restaurant);
 	}
 
 	// 删
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/api/restaurant/{id}")
 	public void delete(@PathVariable long id) {
 		System.out.println("Deleting restaurant: " + id);
 		restaurantService.delete(id);

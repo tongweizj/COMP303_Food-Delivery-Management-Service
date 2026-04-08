@@ -20,7 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/orders")
 public class OrderController {
 
 	private final OrderService orderService;
@@ -30,32 +29,32 @@ public class OrderController {
 	}
 
 	// 查所有
-	@GetMapping
+	@GetMapping("/api/orders")
 	public Flux<Order> getAll() {
 		return orderService.getAll();
 	}
 
 	// 查单个
-	@GetMapping("/{id}")
+	@GetMapping("/api/order/{id}")
 	public Mono<Order> getById(@PathVariable long id) {
 		return orderService.getById(id);
 	}
 
 	// 增
-	@PostMapping
+	@PostMapping("/api/order")
 	public Mono<Order> create(@RequestBody Order order) {
 		return orderService.create(order);
 	}
 
 	// 改
-	@PutMapping("/{id}")
+	@PutMapping("/api/order/{id}")
 	public Mono<Order> updateById(@PathVariable long id, @RequestBody Order order) {
 		System.out.println("Updating order: " + id);
 		return orderService.update(id, order);
 	}
 
 	// 删
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/api/order/{id}")
 	public void delete(@PathVariable long id) {
 		System.out.println("Deleting order: " + id);
 		orderService.delete(id);

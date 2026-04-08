@@ -19,7 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/menuitems")
 public class MenuItemController {
 	private final MenuItemService menuItemService;
 
@@ -28,32 +27,32 @@ public class MenuItemController {
 	}
 
 	// 查所有
-	@GetMapping
+	@GetMapping("/api/menuitems")
 	public Flux<MenuItem> getAll() {
 		return menuItemService.getAll();
 	}
 
 	// 查单个
-	@GetMapping("/{id}")
+	@GetMapping("/api/menuitem/{id}")
 	public Mono<MenuItem> getById(@PathVariable long id) {
 		return menuItemService.getById(id);
 	}
 
 	// 增
-	@PostMapping
+	@PostMapping("/api/menuitem/")
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {
 		return menuItemService.create(m);
 	}
 
 	// 改
-	@PutMapping("/{id}")
+	@PutMapping("/api/menuitem/{id}")
 	public Mono<MenuItem> updateById(@PathVariable long id, @RequestBody MenuItem m) {
 		System.out.println("Updating menuItem: " + id);
 		return menuItemService.update(id, m);
 	}
 
 	// 删
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/api/menuitem/{id}")
 	public void delete(@PathVariable long id) {
 		System.out.println("Deleting menuItem: " + id);
 		menuItemService.delete(id);
