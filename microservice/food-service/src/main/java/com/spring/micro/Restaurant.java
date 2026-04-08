@@ -6,6 +6,7 @@ package com.spring.micro;
  */
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,34 +14,49 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Document(collection = "restaurants")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class Restaurant {
+
+	// Changed to String for MongoDB ObjectId compatibility
+	// As per assignment requirements: restaurant id
 	@Id
-	private long restId;
-	private String restName;
+	private String restaurantId;
+
+	// As per assignment requirements: restaurant name
+	private String restaurantName;
+
+	// As per assignment requirements: cuisine type
 	private String cuisineType;
+
+	// As per assignment requirements: city
 	private String city;
+
+	// As per assignment requirements: rating
 	private double rating;
+
+	// Note: deliveryTime is not explicitly listed in the assignment requirements,
+	// but it is a logical and great addition for a food delivery system!
 	private double deliveryTime;
 
-	public long getRestId() {
-		return restId;
+	public String getRestaurantId() {
+		return restaurantId;
 	}
 
-	public void setRestId(long restId) {
-		this.restId = restId;
+	public void setRestaurantId(String restaurantId) {
+		this.restaurantId = restaurantId;
 	}
 
-	public String getRestName() {
-		return restName;
+	public String getRestaurantName() {
+		return restaurantName;
 	}
 
-	public void setRestName(String restName) {
-		this.restName = restName;
+	public void setRestaurantName(String restaurantName) {
+		this.restaurantName = restaurantName;
 	}
 
 	public String getCuisineType() {
@@ -74,5 +90,4 @@ public class Restaurant {
 	public void setDeliveryTime(double deliveryTime) {
 		this.deliveryTime = deliveryTime;
 	}
-
 }

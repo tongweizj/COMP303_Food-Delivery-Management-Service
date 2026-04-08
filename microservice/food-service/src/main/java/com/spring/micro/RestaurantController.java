@@ -28,35 +28,37 @@ public class RestaurantController {
 		this.restaurantService = restaurantService;
 	}
 
-	// 查所有
-	@GetMapping("/api/restaurants") 
+	// Retrieve all restaurants
+	@GetMapping("/api/restaurants")
 	public Flux<Restaurant> getAll() {
 		return restaurantService.getAll();
 	}
 
-	// 查单个
+	// Retrieve a single restaurant by its ID
 	@GetMapping("/api/restaurant/{id}")
-	public Mono<Restaurant> getById(@PathVariable long id) {
+	public Mono<Restaurant> getById(@PathVariable String id) {
 		return restaurantService.getById(id);
 	}
 
-	// 增
+	// Create a new restaurant
 	@PostMapping("/api/restaurant")
 	public Mono<Restaurant> create(@RequestBody Restaurant restaurant) {
 		return restaurantService.create(restaurant);
 	}
 
-	// 改
+	// Update an existing restaurant by its ID
 	@PutMapping("/api/restaurant/{id}")
-	public Mono<Restaurant> updateById(@PathVariable long id, @RequestBody Restaurant restaurant) {
+	public Mono<Restaurant> updateById(@PathVariable String id, @RequestBody Restaurant restaurant) {
 		System.out.println("Updating restaurant: " + id);
 		return restaurantService.update(id, restaurant);
 	}
 
-	// 删
+	// Delete a restaurant by its ID
+	// Note: In WebFlux, void methods must return Mono<Void> to properly signal
+	// completion
 	@DeleteMapping("/api/restaurant/{id}")
-	public void delete(@PathVariable long id) {
+	public Mono<Void> delete(@PathVariable String id) {
 		System.out.println("Deleting restaurant: " + id);
-		restaurantService.delete(id);
+		return restaurantService.delete(id);
 	}
 }
