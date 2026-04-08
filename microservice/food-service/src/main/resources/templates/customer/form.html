@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <title>Customer form</title>
 </head>
 <body>
-Customer form
+
+<section>
+    <h2>Customer form</h2>
+    <p>Customer form</p>
+</section>
+
 </body>
 </html>

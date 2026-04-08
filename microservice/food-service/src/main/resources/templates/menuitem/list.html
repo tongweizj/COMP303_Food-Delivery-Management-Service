@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
+
 <head>
-<meta charset="UTF-8">
-<title>foods</title>
+    <title>foods list</title>
 </head>
 <body>
-foods list
+
+<section>
+    <h2>foods list</h2>
+    <p>foods list</p>
+</section>
+
 </body>
 </html>
