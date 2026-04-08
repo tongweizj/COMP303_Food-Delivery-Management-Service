@@ -14,35 +14,44 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class OrderService {
+
 	private final OrderRepository orderRepository;
 
-	// 构造器注入（Spring 推荐）
+	// Constructor injection (Recommended by Spring)
 	public OrderService(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
 
+	// Retrieve all orders
 	public Flux<Order> getAll() {
 		return orderRepository.findAll();
 	}
 
-	public Mono<Order> getById(long id) {
+	// Retrieve a single order by ID
+	public Mono<Order> getById(String id) {
 		return orderRepository.findById(id);
 	}
 
+	// Create a new order
 	public Mono<Order> create(Order o) {
 		return orderRepository.save(o);
 	}
 
-	public Mono<Order> update(long id, Order o) {
-		o.setOrderId(id);
-		Mono<Order> updated = orderRepository.save(o);
-		if (updated == null) {
-			throw new RuntimeException("Order not found: " + id);
-		}
-		return updated;
+	// Update an existing order
+	public Mono<Order> update(String id, Order o) {
+		// In WebFlux, we use flatMap to chain operations and switchIfEmpty to handle
+		// "Not Found"
+		return orderRepository.findById(id).flatMap(existingOrder -> {
+			// Ensure the ID from the path variable is set on the object
+			o.setOrderId(id);
+			// Save and return the updated order
+			return orderRepository.save(o);
+		}).switchIfEmpty(Mono.error(new RuntimeException("Order not found: " + id)));
 	}
 
-	public void delete(long id) {
-		orderRepository.deleteById(id);
+	// Delete an order by ID
+	// Note: It must return Mono<Void> to ensure the reactive stream is executed
+	public Mono<Void> delete(String id) {
+		return orderRepository.deleteById(id);
 	}
 }

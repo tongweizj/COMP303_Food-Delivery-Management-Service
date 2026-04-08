@@ -28,35 +28,37 @@ public class OrderController {
 		this.orderService = orderService;
 	}
 
-	// 查所有
+	// Retrieve all orders
 	@GetMapping("/api/orders")
 	public Flux<Order> getAll() {
 		return orderService.getAll();
 	}
 
-	// 查单个
+	// Retrieve a single order by its ID
 	@GetMapping("/api/order/{id}")
-	public Mono<Order> getById(@PathVariable long id) {
+	public Mono<Order> getById(@PathVariable String id) {
 		return orderService.getById(id);
 	}
 
-	// 增
+	// Create a new order
 	@PostMapping("/api/order")
 	public Mono<Order> create(@RequestBody Order order) {
 		return orderService.create(order);
 	}
 
-	// 改
+	// Update an existing order by its ID
 	@PutMapping("/api/order/{id}")
-	public Mono<Order> updateById(@PathVariable long id, @RequestBody Order order) {
+	public Mono<Order> updateById(@PathVariable String id, @RequestBody Order order) {
 		System.out.println("Updating order: " + id);
 		return orderService.update(id, order);
 	}
 
-	// 删
+	// Delete an order by its ID
+	// Note: In WebFlux, void methods should return Mono<Void> to properly signal
+	// completion
 	@DeleteMapping("/api/order/{id}")
-	public void delete(@PathVariable long id) {
+	public Mono<Void> delete(@PathVariable String id) {
 		System.out.println("Deleting order: " + id);
-		orderService.delete(id);
+		return orderService.delete(id);
 	}
 }

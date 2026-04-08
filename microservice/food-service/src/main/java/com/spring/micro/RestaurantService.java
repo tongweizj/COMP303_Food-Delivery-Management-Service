@@ -17,33 +17,41 @@ public class RestaurantService {
 
 	private final RestaurantRepository restaurantRepository;
 
-	// 构造器注入（Spring 推荐）
+	// Constructor injection (Recommended by Spring)
 	public RestaurantService(RestaurantRepository restaurantRepository) {
 		this.restaurantRepository = restaurantRepository;
 	}
 
+	// Retrieve all restaurants
 	public Flux<Restaurant> getAll() {
 		return restaurantRepository.findAll();
 	}
 
-	public Mono<Restaurant> getById(long id) {
+	// Retrieve a single restaurant by ID
+	public Mono<Restaurant> getById(String id) {
 		return restaurantRepository.findById(id);
 	}
 
+	// Create a new restaurant
 	public Mono<Restaurant> create(Restaurant r) {
 		return restaurantRepository.save(r);
 	}
 
-	public Mono<Restaurant> update(long id, Restaurant r) {
-		r.setRestId(id);
-		Mono<Restaurant> updated = restaurantRepository.save(r);
-		if (updated == null) {
-			throw new RuntimeException("Restaurant not found: " + id);
-		}
-		return updated;
+	// Update an existing restaurant
+	public Mono<Restaurant> update(String id, Restaurant r) {
+		// In WebFlux, we chain reactive operators to handle the "find, then update"
+		// flow
+		return restaurantRepository.findById(id).flatMap(existingRestaurant -> {
+			// Make sure the ID from the path variable is set on the object
+			r.setRestaurantId(id);
+			// Save and return the updated restaurant
+			return restaurantRepository.save(r);
+		}).switchIfEmpty(Mono.error(new RuntimeException("Restaurant not found: " + id)));
 	}
 
-	public void delete(long id) {
-		restaurantRepository.deleteById(id);
+	// Delete a restaurant by ID
+	// Note: Must return Mono<Void> to ensure the reactive stream pipeline executes
+	public Mono<Void> delete(String id) {
+		return restaurantRepository.deleteById(id);
 	}
 }
