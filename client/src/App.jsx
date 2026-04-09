@@ -1,163 +1,165 @@
-<<<<<<< HEAD
-/* 
-Author: Xuan Tri Nguyen - 301388576
- */
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import AdminRestaurantPage from './pages/admin/AdminRestaurantPage';
-import AdminFoodPage from './pages/admin/AdminFoodPage';
-import AdminOrderPage from './pages/admin/AdminOrderPage';
-import './App.css';
+// App.jsx
+import React, { useState } from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+
+// Import page components
+import HomePage from "./pages/HomePage";
+import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
+import OrderCartPage from "./pages/OrderCartPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
+import AdminRestaurantListPage from "./pages/Admin/AdminRestaurantListPage";
+import AdminRestaurantFormPage from "./pages/Admin/AdminRestaurantFormPage";
+import AdminFoodFormPage from "./pages/Admin/AdminFoodFormPage";
+import AdminOrderHistoryPage from "./pages/Admin/AdminOrderHistoryPage";
+import BlankPage from "./pages/BlankPage";
 
 function App() {
-  return (
-    <Router>
-      <div className="app-container">
-        {/* Navigation Bar */}
-        <nav style={{ padding: '10px', backgroundColor: '#333', color: 'white', display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <h2 style={{ margin: 0 }}>Admin Dashboard</h2>
-          <Link to="/admin/restaurants" style={{ color: 'white', textDecoration: 'none' }}>Restaurants</Link>
-          <Link to="/admin/foods" style={{ color: 'white', textDecoration: 'none' }}>Food Menu</Link>
-          <Link to="/admin/orders" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
-        </nav>
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const token = localStorage.getItem("authToken");
+    return !!token;
+  });
+  const navigate = useNavigate();
 
-        {/* Main Content Area */}
-        <main style={{ padding: '20px' }}>
-          <Routes>
-            {/* Default Homepage */}
-            <Route path="/" element={<h3>Welcome to the Admin Portal. Please select a management option above.</h3>} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin/restaurants" element={<AdminRestaurantPage />} />
-            <Route path="/admin/foods" element={<AdminFoodPage />} />
-            <Route path="/admin/orders" element={<AdminOrderPage />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+  // The useEffect for checking the token on mount is no longer needed
+  // as useState is now initialized with the value from localStorage.
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setIsAuthenticated(false);
+    navigate("/login");
+    // window.location.reload(); // Force reload to ensure all states are reset
+  };
+
+  return (
+    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
+      <header>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+          <div className="container">
+            <Link className="navbar-brand" to="/">
+              Food Delivery
+            </Link>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    Home
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/cart">
+                    Cart
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/admin">
+                    Admin
+                  </Link>
+                </li>
+              </ul>
+              <ul className="navbar-nav">
+                {isAuthenticated ? (
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#"
+                      id="navbarDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Profile
+                    </a>
+                    <ul
+                      className="dropdown-menu dropdown-menu-end"
+                      aria-labelledby="navbarDropdown"
+                    >
+                      <li>
+                        <Link className="dropdown-item" to="/profile">
+                          My Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                ) : (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/login">
+                      Login
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main className="flex-grow-1">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
+          <Route path="/cart" element={<OrderCartPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route
+            path="/admin/restaurants"
+            element={<AdminRestaurantListPage />}
+          />
+          <Route
+            path="/admin/restaurants/new"
+            element={<AdminRestaurantFormPage />}
+          />
+          <Route
+            path="/admin/restaurants/edit/:id"
+            element={<AdminRestaurantFormPage />}
+          />
+          <Route path="/admin/food/new" element={<AdminFoodFormPage />} />
+          <Route path="/admin/food/edit/:id" element={<AdminFoodFormPage />} />
+          <Route path="/admin/orders" element={<AdminOrderHistoryPage />} />
+
+          {/* Blank page for testing routing */}
+          <Route path="/blank" element={<BlankPage />} />
+
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
+        </Routes>
+      </main>
+
+      <footer className="bg-dark text-white text-center p-3 mt-auto">
+        <div className="container">
+          &copy; {new Date().getFullYear()} Food Delivery Service. All Rights
+          Reserved.
+        </div>
+      </footer>
+    </div>
   );
 }
 
 export default App;
-=======
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
->>>>>>> d254c480de497cb2a8159b0e9476b7ae6c39c844
