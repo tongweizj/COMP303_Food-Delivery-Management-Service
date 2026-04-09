@@ -39,7 +39,7 @@ public class MenuItemController {
 	}
 
 	// 增
-	@PostMapping("/api/menuitem/")
+	@PostMapping("/api/menuitem")
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {
 		return menuItemService.create(m);
 	}
