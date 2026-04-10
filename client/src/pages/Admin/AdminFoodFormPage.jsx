@@ -1,7 +1,8 @@
 // AdminFoodFormPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import adminRestaurantService from '../../services/adminRestaurantService';
+import adminMenuItemService from '../../services/adminMenuItemService';
 
 function AdminFoodFormPage() {
   const { id } = useParams(); // Get menu item ID from URL for edit mode
@@ -21,14 +22,10 @@ function AdminFoodFormPage() {
 
   const isEditMode = Boolean(id);
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   useEffect(() => {
     const fetchInitialData = async () => {
-      const token = getAuthToken();
+      // Token check before any action
+      const token = localStorage.getItem('authToken');
       if (!token) {
         setError('Authentication required. Please log in as an administrator.');
         setLoading(false);
@@ -37,22 +34,18 @@ function AdminFoodFormPage() {
 
       try {
         // Fetch list of restaurants for the dropdown
-        const restaurantsResponse = await axios.get('/api/admin/restaurants', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setRestaurants(restaurantsResponse.data);
+        const restaurantsData = await adminRestaurantService.getAllRestaurants();
+        setRestaurants(restaurantsData);
 
         // If in edit mode, fetch existing menu item data
         if (isEditMode) {
-          const menuItemResponse = await axios.get(`/api/admin/menuitems/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const menuItemData = await adminMenuItemService.getMenuItemById(id);
           setFormData({
-            name: menuItemResponse.data.name || '',
-            description: menuItemResponse.data.description || '',
-            price: menuItemResponse.data.price || '',
-            imageUrl: menuItemResponse.data.imageUrl || '',
-            restaurantId: menuItemResponse.data.restaurantId || '',
+            name: menuItemData.name || '',
+            description: menuItemData.description || '',
+            price: menuItemData.price || '',
+            imageUrl: menuItemData.imageUrl || '',
+            restaurantId: menuItemData.restaurantId || '',
           });
         }
       } catch (err) {
@@ -75,8 +68,8 @@ function AdminFoodFormPage() {
     setSubmitLoading(true);
     setSubmitMessage(null);
     setError(null);
-    const token = getAuthToken();
-
+    
+    const token = localStorage.getItem('authToken');
     if (!token) {
       setError('Authentication required for this action.');
       setSubmitLoading(false);
@@ -84,24 +77,21 @@ function AdminFoodFormPage() {
     }
 
     try {
+      const dataPayload = { ...formData, price: parseFloat(formData.price) };
+
       if (isEditMode) {
-        // PUT request for updating
-        await axios.put(`/api/admin/menuitems/${id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminMenuItemService.updateMenuItem(id, dataPayload);
         setSubmitMessage({ type: 'success', text: 'Menu item updated successfully!' });
       } else {
-        // POST request for creating
-        await axios.post('/api/admin/menuitems', formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminMenuItemService.createMenuItem(dataPayload);
         setSubmitMessage({ type: 'success', text: 'Menu item added successfully!' });
         setFormData({ name: '', description: '', price: '', imageUrl: '', restaurantId: '' }); // Clear form
       }
-      navigate('/admin/restaurants'); // Navigate back to list or a menu items management page
+      setTimeout(() => navigate('/admin/restaurants'), 1500); // Navigate after a delay
     } catch (err) {
-      setSubmitMessage({ type: 'error', text: err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} menu item.` });
-      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'adding'} menu item.`);
+      const errorMessage = err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} menu item.`;
+      setSubmitMessage({ type: 'error', text: errorMessage });
+      setError(errorMessage);
       console.error(`Error ${isEditMode ? 'updating' : 'adding'} menu item:`, err);
     } finally {
       setSubmitLoading(false);
@@ -175,7 +165,7 @@ function AdminFoodFormPage() {
     return <div style={{ ...formContainerStyle, textAlign: 'center' }}>Loading data...</div>;
   }
 
-  if (error) {
+  if (error && !submitMessage) {
     return <div style={{ ...formContainerStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
   }
 

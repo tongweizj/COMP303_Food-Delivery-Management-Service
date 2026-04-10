@@ -1,7 +1,7 @@
 // AdminRestaurantFormPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import adminRestaurantService from '../../services/adminRestaurantService';
 
 function AdminRestaurantFormPage() {
   const { id } = useParams(); // Get restaurant ID from URL for edit mode
@@ -19,26 +19,20 @@ function AdminRestaurantFormPage() {
 
   const isEditMode = Boolean(id);
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   useEffect(() => {
+    // Check for token before any action
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('Authentication required for this page.');
+      setLoading(false);
+      return;
+    }
+
     if (isEditMode) {
       const fetchRestaurant = async () => {
-        const token = getAuthToken();
-        if (!token) {
-          setError('Authentication required for editing.');
-          setLoading(false);
-          return;
-        }
         try {
-          // Assume API Gateway is configured to forward /api/admin/restaurants/:id
-          const response = await axios.get(`/api/admin/restaurants/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setFormData(response.data);
+          const data = await adminRestaurantService.getRestaurantById(id);
+          setFormData(data);
         } catch (err) {
           setError(err.response?.data?.message || 'Failed to fetch restaurant data for editing.');
           console.error('Error fetching restaurant for edit:', err);
@@ -62,8 +56,9 @@ function AdminRestaurantFormPage() {
     setSubmitLoading(true);
     setSubmitMessage(null);
     setError(null);
-    const token = getAuthToken();
 
+    // Token check before submission
+    const token = localStorage.getItem('authToken');
     if (!token) {
       setError('Authentication required for this action.');
       setSubmitLoading(false);
@@ -72,23 +67,19 @@ function AdminRestaurantFormPage() {
 
     try {
       if (isEditMode) {
-        // PUT request for updating
-        await axios.put(`/api/admin/restaurants/${id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminRestaurantService.updateRestaurant(id, formData);
         setSubmitMessage({ type: 'success', text: 'Restaurant updated successfully!' });
       } else {
-        // POST request for creating
-        await axios.post('/api/admin/restaurants', formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminRestaurantService.createRestaurant(formData);
         setSubmitMessage({ type: 'success', text: 'Restaurant added successfully!' });
         setFormData({ name: '', description: '', imageUrl: '', address: '' }); // Clear form after add
       }
-      navigate('/admin/restaurants'); // Navigate back to list after success
+      // Use a timeout to allow user to see the success message before navigating
+      setTimeout(() => navigate('/admin/restaurants'), 1500);
     } catch (err) {
-      setSubmitMessage({ type: 'error', text: err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} restaurant.` });
-      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'adding'} restaurant.`);
+      const errorMessage = err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} restaurant.`;
+      setSubmitMessage({ type: 'error', text: errorMessage });
+      setError(errorMessage);
       console.error(`Error ${isEditMode ? 'updating' : 'adding'} restaurant:`, err);
     } finally {
       setSubmitLoading(false);
@@ -153,7 +144,7 @@ function AdminRestaurantFormPage() {
     return <div style={{ ...formContainerStyle, textAlign: 'center' }}>Loading restaurant data...</div>;
   }
 
-  if (error) {
+  if (error && !submitMessage) { // Only show general error if there is no specific submit message
     return <div style={{ ...formContainerStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
   }
 

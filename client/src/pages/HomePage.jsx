@@ -1,6 +1,6 @@
 // HomePage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import restaurantService from '../services/restaurantService';
 import RestaurantCard from '../components/RestaurantCard'; // Assuming RestaurantCard is in src/components
 
 function HomePage() {
@@ -11,9 +11,8 @@ function HomePage() {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        // Assume API Gateway is configured to forward /api/restaurants to the food-service
-        const response = await axios.get('/api/restaurants'); 
-        setRestaurants(Array.isArray(response.data) ? response.data : []);
+        const data = await restaurantService.getAllRestaurants();
+        setRestaurants(Array.isArray(data) ? data : []);
       } catch (err) {
         setError('Failed to load restaurant list. Please try again later.');
         console.error('Error fetching restaurants:', err);
