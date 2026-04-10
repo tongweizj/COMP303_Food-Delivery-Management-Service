@@ -1,7 +1,7 @@
 // AdminRestaurantFormPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import adminRestaurantService from '../../services/adminRestaurantService';
 
 function AdminRestaurantFormPage() {
   const { id } = useParams(); // Get restaurant ID from URL for edit mode
@@ -19,26 +19,20 @@ function AdminRestaurantFormPage() {
 
   const isEditMode = Boolean(id);
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   useEffect(() => {
+    // Check for token before any action
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('Authentication required for this page.');
+      setLoading(false);
+      return;
+    }
+
     if (isEditMode) {
       const fetchRestaurant = async () => {
-        const token = getAuthToken();
-        if (!token) {
-          setError('Authentication required for editing.');
-          setLoading(false);
-          return;
-        }
         try {
-          // Assume API Gateway is configured to forward /api/admin/restaurants/:id
-          const response = await axios.get(`/api/admin/restaurants/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setFormData(response.data);
+          const data = await adminRestaurantService.getRestaurantById(id);
+          setFormData(data);
         } catch (err) {
           setError(err.response?.data?.message || 'Failed to fetch restaurant data for editing.');
           console.error('Error fetching restaurant for edit:', err);
@@ -62,8 +56,9 @@ function AdminRestaurantFormPage() {
     setSubmitLoading(true);
     setSubmitMessage(null);
     setError(null);
-    const token = getAuthToken();
 
+    // Token check before submission
+    const token = localStorage.getItem('authToken');
     if (!token) {
       setError('Authentication required for this action.');
       setSubmitLoading(false);
@@ -72,111 +67,59 @@ function AdminRestaurantFormPage() {
 
     try {
       if (isEditMode) {
-        // PUT request for updating
-        await axios.put(`/api/admin/restaurants/${id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminRestaurantService.updateRestaurant(id, formData);
         setSubmitMessage({ type: 'success', text: 'Restaurant updated successfully!' });
       } else {
-        // POST request for creating
-        await axios.post('/api/admin/restaurants', formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminRestaurantService.createRestaurant(formData);
         setSubmitMessage({ type: 'success', text: 'Restaurant added successfully!' });
         setFormData({ name: '', description: '', imageUrl: '', address: '' }); // Clear form after add
       }
-      navigate('/admin/restaurants'); // Navigate back to list after success
+      // Use a timeout to allow user to see the success message before navigating
+      setTimeout(() => navigate('/admin/restaurants'), 1500);
     } catch (err) {
-      setSubmitMessage({ type: 'error', text: err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} restaurant.` });
-      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'adding'} restaurant.`);
+      const errorMessage = err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} restaurant.`;
+      setSubmitMessage({ type: 'error', text: errorMessage });
+      setError(errorMessage);
       console.error(`Error ${isEditMode ? 'updating' : 'adding'} restaurant:`, err);
     } finally {
       setSubmitLoading(false);
     }
   };
 
-  const formContainerStyle = {
-    padding: '20px',
-    maxWidth: '600px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '25px',
-  };
-
-  const formGroupStyle = {
-    marginBottom: '15px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#007bff',
-    color: 'white',
-    padding: '12px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '1em',
-    width: '100%',
-    marginTop: '10px',
-  };
-
-  const messageStyle = {
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    textAlign: 'center',
-  };
-
   if (loading && isEditMode) {
-    return <div style={{ ...formContainerStyle, textAlign: 'center' }}>Loading restaurant data...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading restaurant data...</span>
+        </div>
+      </div>
+    );
   }
 
-  if (error) {
-    return <div style={{ ...formContainerStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
+  if (error && !submitMessage) { // Only show general error if there is no specific submit message
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
+      </div>
+    );
   }
 
   return (
-    <div style={formContainerStyle}>
-      <h2 style={titleStyle}>{isEditMode ? 'Edit Restaurant' : 'Add New Restaurant'}</h2>
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '600px' }}>
+      <h2 className="text-center mb-4">{isEditMode ? 'Edit Restaurant' : 'Add New Restaurant'}</h2>
 
       {submitMessage && (
         <div
-          style={{
-            ...messageStyle,
-            backgroundColor: submitMessage.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: submitMessage.type === 'success' ? '#155724' : '#721c24',
-            border: `1px solid ${submitMessage.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
-          }}
+          className={`alert ${submitMessage.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
+          role="alert"
         >
           {submitMessage.text}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={formGroupStyle}>
-          <label htmlFor="name" style={labelStyle}>Restaurant Name:</label>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Restaurant Name:</label>
           <input
             type="text"
             id="name"
@@ -184,11 +127,11 @@ function AdminRestaurantFormPage() {
             value={formData.name}
             onChange={handleInputChange}
             required
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="description" style={labelStyle}>Description:</label>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">Description:</label>
           <textarea
             id="description"
             name="description"
@@ -196,33 +139,38 @@ function AdminRestaurantFormPage() {
             onChange={handleInputChange}
             required
             rows="4"
-            style={inputStyle}
+            className="form-control"
           ></textarea>
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="imageUrl" style={labelStyle}>Image URL:</label>
+        <div className="mb-3">
+          <label htmlFor="imageUrl" className="form-label">Image URL:</label>
           <input
             type="text"
             id="imageUrl"
             name="imageUrl"
             value={formData.imageUrl}
             onChange={handleInputChange}
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="address" style={labelStyle}>Address:</label>
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label">Address:</label>
           <input
             type="text"
             id="address"
             name="address"
             value={formData.address}
             onChange={handleInputChange}
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <button type="submit" disabled={submitLoading} style={buttonStyle}>
-          {submitLoading ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Restaurant' : 'Add Restaurant')}
+        <button type="submit" disabled={submitLoading} className="btn btn-primary w-100 mt-3">
+          {submitLoading ? (
+            <>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {isEditMode ? ' Updating...' : ' Adding...'}
+            </>
+          ) : (isEditMode ? 'Update Restaurant' : 'Add Restaurant')}
         </button>
       </form>
     </div>

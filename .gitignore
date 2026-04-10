@@ -171,6 +171,6 @@ vite.config.ts.timestamp-*
 .vite/
 
 # Gemini files
-/docs
-GEMINI.md
-.geminiignore
+# /docs
+# GEMINI.md
+# .geminiignore

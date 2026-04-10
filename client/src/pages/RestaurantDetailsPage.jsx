@@ -26,77 +26,58 @@ function RestaurantDetailsPage() {
     fetchRestaurantDetails();
   }, [id]); // Re-fetch data when ID changes
 
-  const containerStyle = {
-    padding: '20px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const restaurantHeaderStyle = {
-    textAlign: 'center',
-    marginBottom: '30px',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '20px',
-  };
-
-  const restaurantImageStyle = {
-    maxWidth: '100%',
-    maxHeight: '400px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-    marginBottom: '20px',
-  };
-
-  const menuSectionStyle = {
-    marginTop: '40px',
-    borderTop: '1px solid #eee',
-    paddingTop: '30px',
-  };
-
-  const menuGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '20px',
-    justifyContent: 'center',
-  };
-
-  const messageStyle = {
-    textAlign: 'center',
-    fontSize: '1.2em',
-    color: '#666',
-    padding: '50px',
-  };
-
   if (loading) {
-    return <div style={messageStyle}>Loading...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ ...messageStyle, color: 'red' }}>Error: {error}</div>;
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
+      </div>
+    );
   }
 
   if (!restaurant) {
-    return <div style={messageStyle}>Restaurant not found.</div>;
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-warning text-center">Restaurant not found.</div>
+      </div>
+    );
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={restaurantHeaderStyle}>
-        <img src={restaurant.imageUrl || 'https://via.placeholder.com/800x400?text=Restaurant+Banner'} alt={restaurant.name} style={restaurantImageStyle} />
+    <div className="container my-4">
+      <div className="text-center pb-4 mb-4 border-bottom">
+        <img 
+          src={restaurant.imageUrl || 'https://via.placeholder.com/1200x400?text=Restaurant+Banner'} 
+          alt={restaurant.name} 
+          className="img-fluid rounded mb-3" 
+          style={{ maxHeight: '400px', width: '100%', objectFit: 'cover' }}
+        />
         <h1>{restaurant.name}</h1>
-        <p style={{ color: '#555', lineHeight: '1.6' }}>{restaurant.description}</p>
+        <p className="text-muted fs-5">{restaurant.description}</p>
       </div>
 
-      <div style={menuSectionStyle}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Menu</h2>
-        <div style={menuGridStyle}>
+      <div className="mt-5">
+        <h2 className="text-center mb-4">Menu</h2>
+        <div className="row g-4 justify-content-center">
           {restaurant.menuItems && restaurant.menuItems.length > 0 ? (
             restaurant.menuItems.map(item => (
-              <MenuItemCard key={item.id} menuItem={item} />
+              <div className="col-lg-4 col-md-6" key={item.id}>
+                <MenuItemCard menuItem={item} />
+              </div>
             ))
           ) : (
-            <p style={{ textAlign: 'center', width: '100%', color: '#777' }}>No menu items available for this restaurant.</p>
+            <div className="col-12">
+              <p className="text-center text-muted">No menu items available for this restaurant.</p>
+            </div>
           )}
         </div>
       </div>

@@ -24,39 +24,38 @@ function HomePage() {
     fetchRestaurants();
   }, []);
 
-  const containerStyle = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    padding: '20px',
-    gap: '20px',
-  };
-
-  const messageStyle = {
-    textAlign: 'center',
-    fontSize: '1.2em',
-    color: '#666',
-    padding: '50px',
-  };
-
   if (loading) {
-    return <div style={messageStyle}>Loading...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ ...messageStyle, color: 'red' }}>Error: {error}</div>;
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1 style={{ textAlign: 'center', margin: '20px 0', color: '#333' }}>Our Restaurants</h1>
-      <div style={containerStyle}>
+    <div className="container my-4">
+      <h1 className="text-center my-4">Our Restaurants</h1>
+      <div className="row g-4">
         {restaurants.length > 0 ? (
           restaurants.map(restaurant => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            <div className="col-xl-3 col-lg-4 col-md-6" key={restaurant.id}>
+              <RestaurantCard restaurant={restaurant} />
+            </div>
           ))
         ) : (
-          <div style={messageStyle}>No restaurants available at the moment.</div>
+          <div className="col-12">
+            <p className="text-center text-muted">No restaurants available at the moment.</p>
+          </div>
         )}
       </div>
     </div>

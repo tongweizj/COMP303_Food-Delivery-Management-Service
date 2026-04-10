@@ -2,10 +2,7 @@
 import React, { useState } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 
-// Import the basic blank page component for testing routes
-import BlankPage from "./pages/BlankPage"; // Assuming BlankPage is in src/pages/BlankPage.jsx
-
-// Placeholder page components - adjust paths as per your project structure
+// Import page components
 import HomePage from "./pages/HomePage";
 import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
 import OrderCartPage from "./pages/OrderCartPage";
@@ -13,27 +10,24 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
-import AdminRestaurantListPage from "./pages/Admin/AdminRestaurantListPage"; // Add this import
+import AdminRestaurantListPage from "./pages/Admin/AdminRestaurantListPage";
 import AdminRestaurantFormPage from "./pages/Admin/AdminRestaurantFormPage";
 import AdminFoodFormPage from "./pages/Admin/AdminFoodFormPage";
 import AdminOrderHistoryPage from "./pages/Admin/AdminOrderHistoryPage";
-// import NotFoundPage from './pages/NotFoundPage'; // Optional: 404 Not Found Page
+import BlankPage from "./pages/BlankPage";
 
 function App() {
+  // 保留 HEAD 的寫法：使用 lazy initialization 同步確認登入狀態，避免畫面閃爍
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem("authToken");
     return !!token;
   });
   const navigate = useNavigate();
 
-  // The useEffect for checking the token on mount is no longer needed
-  // as useState is now initialized with the value from localStorage.
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsAuthenticated(false);
     navigate("/login");
-    // window.location.reload(); // Force reload to ensure all states are reset
   };
 
   return (
@@ -121,10 +115,9 @@ function App() {
         </nav>
       </header>
 
-      {/* 將多餘的 <Routes> 區塊移除，只保留包在 <main> 裡面的部分 */}
       <main className="flex-grow-1">
         <Routes>
-          {/* 前台路由 */}
+          {/* 前台路由 / Frontend Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
           <Route path="/cart" element={<OrderCartPage />} />
@@ -132,7 +125,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
 
-          {/* 後台 (Admin) 路由 */}
+          {/* 後台 (Admin) 路由 / Admin Routes */}
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route
             path="/admin/restaurants"
@@ -150,10 +143,8 @@ function App() {
           <Route path="/admin/food/edit/:id" element={<AdminFoodFormPage />} />
           <Route path="/admin/orders" element={<AdminOrderHistoryPage />} />
 
-          {/* 測試用路由 */}
+          {/* 測試用路由 / Blank page for testing routing */}
           <Route path="/blank" element={<BlankPage />} />
-
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
         </Routes>
       </main>
 

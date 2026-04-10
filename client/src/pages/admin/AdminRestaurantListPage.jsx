@@ -95,165 +95,83 @@ function AdminRestaurantListPage() {
     }
   };
 
-  const pageStyle = {
-    padding: "20px",
-    maxWidth: "1200px",
-    margin: "20px auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    fontFamily: "Arial, sans-serif",
-  };
-
-  const titleStyle = {
-    textAlign: "center",
-    color: "#333",
-    marginBottom: "25px",
-  };
-
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "20px",
-  };
-
-  const thStyle = {
-    border: "1px solid #ddd",
-    padding: "12px",
-    textAlign: "left",
-    backgroundColor: "#007bff",
-    color: "white",
-  };
-
-  const tdStyle = {
-    border: "1px solid #ddd",
-    padding: "12px",
-    textAlign: "left",
-  };
-
-  const actionButtonStyle = {
-    padding: "8px 12px",
-    marginRight: "8px",
-    borderRadius: "4px",
-    cursor: "pointer",
-    border: "none",
-    fontSize: "0.9em",
-  };
-
-  const editButtonStyle = {
-    ...actionButtonStyle,
-    backgroundColor: "#28a745", // Green
-    color: "white",
-    textDecoration: "none", // For Link component
-  };
-
-  const deleteButtonStyle = {
-    ...actionButtonStyle,
-    backgroundColor: "#dc3545", // Red
-    color: "white",
-  };
-
-  const addButtonStyle = {
-    backgroundColor: "#17a2b8", // Info blue
-    color: "white",
-    padding: "10px 15px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "1em",
-    marginBottom: "20px",
-    display: "block",
-    width: "fit-content",
-    textDecoration: "none",
-  };
-
-  const messageStyle = {
-    padding: "10px",
-    borderRadius: "4px",
-    marginBottom: "15px",
-    textAlign: "center",
-  };
-
   if (loading && !deleteMessage) {
     // Show loading only for initial fetch or if delete is pending
     return (
-      <div style={{ ...pageStyle, textAlign: "center" }}>
-        Loading restaurants...
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading restaurants...</span>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ ...pageStyle, color: "red", textAlign: "center" }}>
-        Error: {error}
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
       </div>
     );
   }
 
   return (
-    <div style={pageStyle}>
-      <h1 style={titleStyle}>Manage Restaurants</h1>
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm">
+      <h1 className="text-center mb-4">Manage Restaurants</h1>
       {deleteMessage && (
         <div
-          style={{
-            ...messageStyle,
-            backgroundColor:
-              deleteMessage.type === "success" ? "#d4edda" : "#f8d7da",
-            color: deleteMessage.type === "success" ? "#155724" : "#721c24",
-            border: `1px solid ${deleteMessage.type === "success" ? "#c3e6cb" : "#f5c6cb"}`,
-          }}
+          className={`alert ${deleteMessage.type === "success" ? "alert-success" : "alert-danger"} text-center`}
+          role="alert"
         >
           {deleteMessage.text}
         </div>
       )}
 
-      <Link to="/admin/restaurants/new" style={addButtonStyle}>
+      <Link to="/admin/restaurants/new" className="btn btn-primary mb-3">
         Add New Restaurant
       </Link>
 
       {restaurants.length > 0 ? (
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Cuisine</th>
-              <th style={thStyle}>City</th>
-              <th style={thStyle}>Rating</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {restaurants.map((restaurant) => (
-              <tr key={restaurant.restaurantId}>
-                {" "}
-                {/* Assuming restaurant objects have an 'id' field */}
-                <td style={tdStyle}>{restaurant.restaurantName}</td>
-                <td style={tdStyle}>{restaurant.cuisineType || "N/A"}</td>
-                <td style={tdStyle}>{restaurant.city || "N/A"}</td>
-                <td style={tdStyle}>
-                  {restaurant.rating ? restaurant.rating.toFixed(1) : "N/A"}
-                </td>
-                <td style={tdStyle}>
-                  <Link
-                    to={`/admin/restaurants/edit/${restaurant.id}`}
-                    style={editButtonStyle}
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(restaurant.id)}
-                    style={deleteButtonStyle}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Name</th>
+                <th>Cuisine</th>
+                <th>City</th>
+                <th>Rating</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {restaurants.map((restaurant) => (
+                <tr key={restaurant.restaurantId}>
+                  <td>{restaurant.restaurantName}</td>
+                  <td>{restaurant.cuisineType || "N/A"}</td>
+                  <td>{restaurant.city || "N/A"}</td>
+                  <td>
+                    {restaurant.rating ? restaurant.rating.toFixed(1) : "N/A"}
+                  </td>
+                  <td>
+                    <Link
+                      to={`/admin/restaurants/edit/${restaurant.id}`}
+                      className="btn btn-success btn-sm me-2"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(restaurant.id)}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p style={{ textAlign: "center", color: "#777" }}>
+        <p className="text-center text-muted mt-4">
           No restaurants found. Add one!
         </p>
       )}

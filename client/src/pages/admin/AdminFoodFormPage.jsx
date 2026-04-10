@@ -1,7 +1,8 @@
 // AdminFoodFormPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import adminRestaurantService from '../../services/adminRestaurantService';
+import adminMenuItemService from '../../services/adminMenuItemService';
 
 function AdminFoodFormPage() {
   const { id } = useParams(); // Get menu item ID from URL for edit mode
@@ -21,14 +22,10 @@ function AdminFoodFormPage() {
 
   const isEditMode = Boolean(id);
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   useEffect(() => {
     const fetchInitialData = async () => {
-      const token = getAuthToken();
+      // Token check before any action
+      const token = localStorage.getItem('authToken');
       if (!token) {
         setError('Authentication required. Please log in as an administrator.');
         setLoading(false);
@@ -37,22 +34,18 @@ function AdminFoodFormPage() {
 
       try {
         // Fetch list of restaurants for the dropdown
-        const restaurantsResponse = await axios.get('/api/admin/restaurants', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setRestaurants(restaurantsResponse.data);
+        const restaurantsData = await adminRestaurantService.getAllRestaurants();
+        setRestaurants(restaurantsData);
 
         // If in edit mode, fetch existing menu item data
         if (isEditMode) {
-          const menuItemResponse = await axios.get(`/api/admin/menuitems/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const menuItemData = await adminMenuItemService.getMenuItemById(id);
           setFormData({
-            name: menuItemResponse.data.name || '',
-            description: menuItemResponse.data.description || '',
-            price: menuItemResponse.data.price || '',
-            imageUrl: menuItemResponse.data.imageUrl || '',
-            restaurantId: menuItemResponse.data.restaurantId || '',
+            name: menuItemData.name || '',
+            description: menuItemData.description || '',
+            price: menuItemData.price || '',
+            imageUrl: menuItemData.imageUrl || '',
+            restaurantId: menuItemData.restaurantId || '',
           });
         }
       } catch (err) {
@@ -75,8 +68,8 @@ function AdminFoodFormPage() {
     setSubmitLoading(true);
     setSubmitMessage(null);
     setError(null);
-    const token = getAuthToken();
 
+    const token = localStorage.getItem('authToken');
     if (!token) {
       setError('Authentication required for this action.');
       setSubmitLoading(false);
@@ -84,121 +77,61 @@ function AdminFoodFormPage() {
     }
 
     try {
+      const dataPayload = { ...formData, price: parseFloat(formData.price) };
+
       if (isEditMode) {
-        // PUT request for updating
-        await axios.put(`/api/admin/menuitems/${id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminMenuItemService.updateMenuItem(id, dataPayload);
         setSubmitMessage({ type: 'success', text: 'Menu item updated successfully!' });
       } else {
-        // POST request for creating
-        await axios.post('/api/admin/menuitems', formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await adminMenuItemService.createMenuItem(dataPayload);
         setSubmitMessage({ type: 'success', text: 'Menu item added successfully!' });
         setFormData({ name: '', description: '', price: '', imageUrl: '', restaurantId: '' }); // Clear form
       }
-      navigate('/admin/restaurants'); // Navigate back to list or a menu items management page
+      setTimeout(() => navigate('/admin/restaurants'), 1500); // Navigate after a delay
     } catch (err) {
-      setSubmitMessage({ type: 'error', text: err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} menu item.` });
-      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'adding'} menu item.`);
+      const errorMessage = err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} menu item.`;
+      setSubmitMessage({ type: 'error', text: errorMessage });
+      setError(errorMessage);
       console.error(`Error ${isEditMode ? 'updating' : 'adding'} menu item:`, err);
     } finally {
       setSubmitLoading(false);
     }
   };
 
-  const formContainerStyle = {
-    padding: '20px',
-    maxWidth: '600px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '25px',
-  };
-
-  const formGroupStyle = {
-    marginBottom: '15px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  };
-
-  const selectStyle = {
-    ...inputStyle,
-    appearance: 'none', // Remove default arrow
-    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23666' d='M10 12l-6-6h12z'/%3E%3C/svg%3E")`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'right 10px center',
-    backgroundSize: '12px',
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#007bff',
-    color: 'white',
-    padding: '12px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '1em',
-    width: '100%',
-    marginTop: '10px',
-  };
-
-  const messageStyle = {
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    textAlign: 'center',
-  };
-
   if (loading) {
-    return <div style={{ ...formContainerStyle, textAlign: 'center' }}>Loading data...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading data...</span>
+        </div>
+      </div>
+    );
   }
 
-  if (error) {
-    return <div style={{ ...formContainerStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
+  if (error && !submitMessage) {
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
+      </div>
+    );
   }
 
   return (
-    <div style={formContainerStyle}>
-      <h2 style={titleStyle}>{isEditMode ? 'Edit Menu Item' : 'Add New Menu Item'}</h2>
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '600px' }}>
+      <h2 className="text-center mb-4">{isEditMode ? 'Edit Menu Item' : 'Add New Menu Item'}</h2>
 
       {submitMessage && (
         <div
-          style={{
-            ...messageStyle,
-            backgroundColor: submitMessage.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: submitMessage.type === 'success' ? '#155724' : '#721c24',
-            border: `1px solid ${submitMessage.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
-          }}
+          className={`alert ${submitMessage.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
+          role="alert"
         >
           {submitMessage.text}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={formGroupStyle}>
-          <label htmlFor="name" style={labelStyle}>Menu Item Name:</label>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Menu Item Name:</label>
           <input
             type="text"
             id="name"
@@ -206,11 +139,11 @@ function AdminFoodFormPage() {
             value={formData.name}
             onChange={handleInputChange}
             required
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="description" style={labelStyle}>Description:</label>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">Description:</label>
           <textarea
             id="description"
             name="description"
@@ -218,11 +151,11 @@ function AdminFoodFormPage() {
             onChange={handleInputChange}
             required
             rows="4"
-            style={inputStyle}
+            className="form-control"
           ></textarea>
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="price" style={labelStyle}>Price:</label>
+        <div className="mb-3">
+          <label htmlFor="price" className="form-label">Price:</label>
           <input
             type="number"
             id="price"
@@ -231,29 +164,29 @@ function AdminFoodFormPage() {
             onChange={handleInputChange}
             required
             step="0.01"
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="imageUrl" style={labelStyle}>Image URL:</label>
+        <div className="mb-3">
+          <label htmlFor="imageUrl" className="form-label">Image URL:</label>
           <input
             type="text"
             id="imageUrl"
             name="imageUrl"
             value={formData.imageUrl}
             onChange={handleInputChange}
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="restaurantId" style={labelStyle}>Restaurant:</label>
+        <div className="mb-3">
+          <label htmlFor="restaurantId" className="form-label">Restaurant:</label>
           <select
             id="restaurantId"
             name="restaurantId"
             value={formData.restaurantId}
             onChange={handleInputChange}
             required
-            style={selectStyle}
+            className="form-select"
           >
             <option value="">-- Select a Restaurant --</option>
             {restaurants.map(restaurant => (
@@ -261,8 +194,13 @@ function AdminFoodFormPage() {
             ))}
           </select>
         </div>
-        <button type="submit" disabled={submitLoading} style={buttonStyle}>
-          {submitLoading ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Menu Item' : 'Add Menu Item')}
+        <button type="submit" disabled={submitLoading} className="btn btn-primary w-100 mt-3">
+          {submitLoading ? (
+            <>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {isEditMode ? ' Updating...' : ' Adding...'}
+            </>
+          ) : (isEditMode ? 'Update Menu Item' : 'Add Menu Item')}
         </button>
       </form>
     </div>
