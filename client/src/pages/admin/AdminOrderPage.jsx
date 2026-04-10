@@ -1,69 +1,117 @@
 /* 
 Author: Xuan Tri Nguyen - 301388576
+Refactored by Gemini to use services and Bootstrap.
  */
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import adminOrderService from '../../services/adminOrderService';
 
 export default function AdminOrderPage() {
   const [orders, setOrders] = useState([]);
-  const API_URL = 'http://localhost:8080/api/orders';
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => { fetchOrders(); }, []);
+  const orderStatuses = ['PENDING', 'PROCESSING', 'DELIVERED', 'CANCELLED'];
 
   const fetchOrders = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await axios.get(API_URL);
-      setOrders(response.data);
-    } catch (error) { console.error("Error fetching orders", error); }
+      const data = await adminOrderService.getAllOrders();
+      setOrders(data);
+    } catch (error) {
+      console.error("Error fetching orders", error);
+      setError(error.response?.data?.message || "Failed to fetch orders.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.put(`${API_URL}/${id}/status`, null, { params: { status: newStatus } });
-      fetchOrders();
-    } catch (error) { console.error("Error updating status", error); }
+      await adminOrderService.updateOrderStatus(id, newStatus);
+      // Optimistically update the UI
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === id ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status", error);
+      // Optionally show an error message to the user
+    }
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) {
+      return;
+    }
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      fetchOrders();
-    } catch (error) { console.error("Error deleting", error); }
+      await adminOrderService.deleteOrder(id);
+      setOrders(prevOrders => prevOrders.filter(order => order.id !== id));
+    } catch (error) {
+      console.error("Error deleting order", error);
+      setError(error.response?.data?.message || "Failed to delete order.");
+    }
   };
 
+  if (loading) {
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading orders...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2>Admin: Manage Orders</h2>
-      <table border="1" style={{ width: '100%', marginTop: '10px' }}>
-        <thead>
-          <tr>
-            <th>Order ID</th><th>User ID</th><th>Amount</th><th>Status</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order.orderId}>
-              <td>{order.orderId}</td>
-              <td>{order.userId}</td>
-              <td>${order.totalAmount}</td>
-              <td>
-                <select 
-                  value={order.orderStatus} 
-                  onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                >
-                  <option value="Placed">Placed</option>
-                  <option value="Preparing">Preparing</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </td>
-              <td>
-                <button onClick={() => handleDelete(order.orderId)}>Delete</button>
-              </td>
+    <div className="container mt-4">
+      <h1 className="mb-4">Admin: Manage Orders</h1>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <div className="table-responsive">
+        <table className="table table-striped table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map(order => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.customerName || 'N/A'}</td>
+                <td>${order.totalAmount ? order.totalAmount.toFixed(2) : 'N/A'}</td>
+                <td>
+                  <select
+                    className="form-select form-select-sm"
+                    value={order.status}
+                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                  >
+                    {orderStatuses.map(status => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                </td>
+                <td>
+                  <button onClick={() => handleDelete(order.id)} className="btn btn-danger btn-sm">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

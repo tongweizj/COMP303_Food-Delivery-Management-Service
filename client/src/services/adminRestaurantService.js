@@ -29,10 +29,10 @@ const adminRestaurantService = {
   },
   
   // Note: The original files did not show a delete action, but it's a common admin feature.
-  // async deleteRestaurant(id) {
-  //   const response = await apiClient.delete(`/admin/restaurants/${id}`, { headers: getAuthHeaders() });
-  //   return response.data;
-  // }
+  async deleteRestaurant(id) {
+    const response = await apiClient.delete(`/admin/restaurants/${id}`, { headers: getAuthHeaders() });
+    return response.data;
+  }
 };
 
 export default adminRestaurantService;
