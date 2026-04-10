@@ -18,15 +18,15 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Mono<Customer> getCustomerById(Long id) {
+    public Mono<Customer> getCustomerById(String id) {
         return customerRepository.findById(id);
     }
 
-    public Mono<Customer> createCustomer(Customer customer) {
+    public Mono<Customer> save(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    public Mono<Customer> updateCustomer(Long id, Customer customerDetails) {
+    public Mono<Customer> updateCustomer(String id, Customer customerDetails) {
     	customerDetails.setId(id);
     	Mono<Customer> updated = customerRepository.save(customerDetails);
     	if (updated == null) {
@@ -35,7 +35,7 @@ public class CustomerService {
 		return updated;
     }
 
-    public void deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
+    public Mono<Void> deleteCustomer(String id) {
+        return customerRepository.deleteById(id);
     }
 }

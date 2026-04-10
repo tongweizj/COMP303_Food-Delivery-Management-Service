@@ -1,6 +1,7 @@
 package com.spring.micro;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,18 +13,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Customer {
     @Id
-    private long id;
+    private String id;
 
     private String name;
     
+    @Indexed(unique = true)
     private String email;
 
     private String phoneNumber;
     private String address;
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName() {

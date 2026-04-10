@@ -33,7 +33,7 @@ public class OrderService {
 	}
 
 	// Create a new order
-	public Mono<Order> create(Order o) {
+	public Mono<Order> save(Order o) {
 		return orderRepository.save(o);
 	}
 

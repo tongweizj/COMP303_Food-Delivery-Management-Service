@@ -25,22 +25,22 @@ public class CustomerRestController {
     }
 
     @GetMapping("/{id}")
-    public  Mono<Customer> getUserById(@PathVariable Long id) {
+    public  Mono<Customer> getUserById(@PathVariable String id) {
         return customerService.getCustomerById(id);
     }
 
     @PostMapping
     public  Mono<Customer> createUser(@RequestBody Customer customer) {
-        return customerService.createCustomer(customer);
+        return customerService.save(customer);
     }
 
     @PutMapping("/{id}")
-    public  Mono<Customer> updateUser(@PathVariable Long id, @RequestBody Customer customer) {
+    public  Mono<Customer> updateUser(@PathVariable String id, @RequestBody Customer customer) {
         return customerService.updateCustomer(id, customer);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCustomer(@PathVariable Long id) {
+    public String deleteCustomer(@PathVariable String id) {
     	customerService.deleteCustomer(id);
         return "User deleted successfully with id: " + id;
     }
