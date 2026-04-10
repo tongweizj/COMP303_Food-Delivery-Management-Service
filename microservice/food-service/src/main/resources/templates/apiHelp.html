@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Delivery Management System API Documentation</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background-color: #343a40;
+        }
+        .api-card {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        .api-header {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .method-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            margin-right: 10px;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        .bg-get { background-color: #28a745; color: white; }
+        .bg-post { background-color: #007bff; color: white; }
+        .bg-put { background-color: #ffc107; color: #212529; }
+        .bg-delete { background-color: #dc3545; color: white; }
+        .path-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .api-body {
+            padding: 15px;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 3px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #212529;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .section-title {
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+        .nav-pills .nav-link {
+            color: #495057;
+            border: 1px solid #dee2e6;
+            margin-right: 5px;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #343a40;
+            color: white;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .status-pending { background-color: #ffc107; color: #212529; }
+        .status-preparing { background-color: #17a2b8; color: white; }
+        .status-delivered { background-color: #28a745; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">
+                🍽️ <span th:text="${apiName}">Food Delivery Management System API Documentation</span>
+                <small class="text-muted ms-2" th:text="${version}">v1.0</small>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Introduction -->
+        <div class="alert alert-light border" role="alert">
+            <strong>Quick Start</strong><br>
+            This API provides CRUD operations for Restaurant, MenuItem, and Order management. 
+            All endpoints return JSON format. Base URL: <code>http://localhost:8080</code>
+        </div>
+
+        <!-- Module Tabs -->
+        <ul class="nav nav-pills mb-4" id="apiTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="restaurant-tab" data-bs-toggle="pill" data-bs-target="#restaurant" type="button" role="tab">🏪 Restaurant</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="menuitem-tab" data-bs-toggle="pill" data-bs-target="#menuitem" type="button" role="tab">🍔 MenuItem</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="order-tab" data-bs-toggle="pill" data-bs-target="#order" type="button" role="tab">📋 Order</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="apiTabContent">
+
+            <!-- ==================== RESTAURANT APIs ==================== -->
+            <div class="tab-pane fade show active" id="restaurant" role="tabpanel">
+                <h4 class="section-title">🏪 Restaurant APIs</h4>
+
+                <!-- GET All -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/restaurants</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get all restaurants</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/restaurants
+
+// No request body required</div>
+                    </div>
+                </div>
+
+                <!-- GET One -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/restaurants/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get restaurant by ID</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/restaurants/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+                <!-- POST Create -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-post">POST</span>
+                        <span class="path-text">/restaurants</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Create a new restaurant (ID auto-generated)</p>
+                        <div class="code-block">Method: POST
+URL: http://localhost:8080/restaurants
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "restName": "Haidilao Hotpot",
+    "cuisineType": "Chinese Hotpot",
+    "city": "Chengdu",
+    "rating": 4.8,
+    "deliveryTime": 45.5
+}</div>
+                    </div>
+                </div>
+
+                <!-- PUT Update -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-put">PUT</span>
+                        <span class="path-text">/restaurants/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Update restaurant by ID</p>
+                        <div class="code-block">Method: PUT
+URL: http://localhost:8080/restaurants/1
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "restName": "Updated Restaurant",
+    "cuisineType": "Sichuan Cuisine",
+    "city": "Beijing",
+    "rating": 4.5,
+    "deliveryTime": 30.0
+}</div>
+                    </div>
+                </div>
+
+                <!-- DELETE -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-delete">DELETE</span>
+                        <span class="path-text">/restaurants/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Delete restaurant by ID</p>
+                        <div class="code-block">Method: DELETE
+URL: http://localhost:8080/restaurants/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+                <!-- Data Model -->
+                <h5 class="mt-4 mb-3">📦 Restaurant Model</h5>
+                <div class="code-block">{
+    "restId": 1,              // Long, Auto-generated (@Id)
+    "restName": "Haidilao",   // String, Required
+    "cuisineType": "Hotpot",  // String, Optional
+    "city": "Chengdu",        // String, Optional
+    "rating": 4.8,            // double, Optional (0.0 - 5.0)
+    "deliveryTime": 45.5      // double, Optional (minutes)
+}</div>
+            </div>
+
+            <!-- ==================== MENUITEM APIs ==================== -->
+            <div class="tab-pane fade" id="menuitem" role="tabpanel">
+                <h4 class="section-title">🍔 MenuItem APIs</h4>
+
+                <!-- GET All -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/menuitems</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get all menu items</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/menuitems
+
+// No request body required</div>
+                    </div>
+                </div>
+
+                <!-- GET One -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/menuitems/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get menu item by ID</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/menuitems/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+                <!-- GET By Restaurant -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/menuitems/restaurant/{restId}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get menu items by restaurant ID</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/menuitems/restaurant/1
+
+// Path Variable: restId = 1</div>
+                    </div>
+                </div>
+
+                <!-- POST Create -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-post">POST</span>
+                        <span class="path-text">/menuitems</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Create a new menu item (ID auto-generated)</p>
+                        <div class="code-block">Method: POST
+URL: http://localhost:8080/menuitems
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "itemName": "Spicy Beef Slice",
+    "category": "Meat",
+    "price": 45.00,
+    "availability": true,
+    "restId": 1
+}</div>
+                    </div>
+                </div>
+
+                <!-- PUT Update -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-put">PUT</span>
+                        <span class="path-text">/menuitems/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Update menu item by ID</p>
+                        <div class="code-block">Method: PUT
+URL: http://localhost:8080/menuitems/1
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "itemName": "Premium Beef Slice",
+    "category": "Premium Meat",
+    "price": 58.00,
+    "availability": true,
+    "restId": 1
+}</div>
+                    </div>
+                </div>
+
+                <!-- PUT Toggle Availability -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-put">PUT</span>
+                        <span class="path-text">/menuitems/{id}/availability</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Update menu item availability status</p>
+                        <div class="code-block">Method: PUT
+URL: http://localhost:8080/menuitems/1/availability
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "availability": false
+}</div>
+                    </div>
+                </div>
+
+                <!-- DELETE -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-delete">DELETE</span>
+                        <span class="path-text">/menuitems/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Delete menu item by ID</p>
+                        <div class="code-block">Method: DELETE
+URL: http://localhost:8080/menuitems/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+                <!-- Data Model -->
+                <h5 class="mt-4 mb-3">📦 MenuItem Model</h5>
+                <div class="code-block">{
+    "menuItemId": 1,          // Long, Auto-generated (@Id)
+    "itemName": "Beef Slice", // String, Required
+    "category": "Meat",       // String, Optional
+    "price": 45.00,           // double, Required
+    "availability": true,     // boolean, Default: true
+    "restId": 1               // Long, Required (Foreign Key to Restaurant)
+}</div>
+            </div>
+
+            <!-- ==================== ORDER APIs ==================== -->
+            <div class="tab-pane fade" id="order" role="tabpanel">
+                <h4 class="section-title">📋 Order APIs</h4>
+
+                <!-- GET All -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/orders</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get all orders</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/orders
+
+// No request body required</div>
+                    </div>
+                </div>
+
+                <!-- GET One -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-get">GET</span>
+                        <span class="path-text">/orders/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Get order by ID</p>
+                        <div class="code-block">Method: GET
+URL: http://localhost:8080/orders/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+ 
+
+
+
+                <!-- POST Create -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-post">POST</span>
+                        <span class="path-text">/orders</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Create a new order (ID and time auto-generated)</p>
+                        <div class="code-block">Method: POST
+URL: http://localhost:8080/orders
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "customerName": "John Doe",
+    "menuItemId": 1,
+    "quantity": 2,
+    "orderStatus": "Pending"
+}
+// orderTime is auto-set to current time</div>
+                    </div>
+                </div>
+
+                <!-- PUT Update -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-put">PUT</span>
+                        <span class="path-text">/orders/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Update order details (quantity, menuItem, etc.)</p>
+                        <div class="code-block">Method: PUT
+URL: http://localhost:8080/orders/1
+Headers: Content-Type: application/json
+
+Body (raw JSON):
+{
+    "customerName": "John Doe",
+    "menuItemId": 2,
+    "quantity": 3,
+    "orderStatus": "Preparing"
+}</div>
+                    </div>
+                </div>
+
+                <!-- DELETE -->
+                <div class="api-card">
+                    <div class="api-header">
+                        <span class="method-badge bg-delete">DELETE</span>
+                        <span class="path-text">/orders/{id}</span>
+                    </div>
+                    <div class="api-body">
+                        <p class="text-muted mb-2">Cancel/Delete order by ID</p>
+                        <div class="code-block">Method: DELETE
+URL: http://localhost:8080/orders/1
+
+// Path Variable: id = 1</div>
+                    </div>
+                </div>
+
+                <!-- Data Model -->
+                <h5 class="mt-4 mb-3">📦 Order Model</h5>
+                <div class="code-block">{
+    "orderId": 1,                 // Long, Auto-generated (@Id)
+    "customerName": "John Doe",   // String, Required
+    "menuItemId": 1,              // Long, Required (Foreign Key to MenuItem)
+    "quantity": 2,                // int, Required
+    "orderStatus": "Pending",     // String, Default: "Pending"
+                                  // Options: <span class="status-badge status-pending">Pending</span> 
+                                  //          <span class="status-badge status-preparing">Preparing</span> 
+                                  //          <span class="status-badge status-delivered">Delivered</span>
+    "orderTime": "2024-01-15T10:30:00"  // LocalDateTime, Auto-generated (creation time)
+}</div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-muted mt-5 pt-3 border-top">
+            <small>Built with Spring Boot + Thymeleaf | 
+            Server Time: [[${#dates.format(new java.util.Date(), 'yyyy-MM-dd HH:mm:ss')}]]</small>
+        </footer>
+
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
