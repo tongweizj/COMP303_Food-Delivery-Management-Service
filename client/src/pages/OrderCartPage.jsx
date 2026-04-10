@@ -49,9 +49,9 @@ function OrderCartPage() {
         paymentMethod,
         // Add more fields like userId, restaurantId if necessary
       };
-      
+
       const data = await orderService.createOrder(orderData);
-      
+
       setOrderSuccess(true);
       setCartItems([]); // Clear cart after successful order
       setShippingAddress('');
@@ -66,122 +66,36 @@ function OrderCartPage() {
     }
   };
 
-  const pageStyle = {
-    padding: '20px',
-    maxWidth: '800px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const sectionTitleStyle = {
-    color: '#333',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '10px',
-    marginBottom: '20px',
-  };
-
-  const cartListStyle = {
-    listStyle: 'none',
-    padding: 0,
-    marginBottom: '20px',
-  };
-
-  const cartItemStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    borderBottom: '1px dashed #eee',
-  };
-
-  const totalStyle = {
-    fontWeight: 'bold',
-    fontSize: '1.4em',
-    textAlign: 'right',
-    marginTop: '15px',
-    color: '#e44d26',
-  };
-
-  const formGroupStyle = {
-    marginBottom: '15px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    padding: '12px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '1em',
-    width: '100%',
-  };
-
-  const successMessageStyle = {
-    backgroundColor: '#d4edda',
-    color: '#155724',
-    border: '1px solid #c3e6cb',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-  };
-
-  const errorMessageStyle = {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    border: '1px solid #f5c6cb',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-  };
-
   if (cartItems.length === 0 && !orderSuccess) {
     return (
-      <div style={pageStyle}>
-        <h1 style={sectionTitleStyle}>Your Cart</h1>
-        <p style={{ textAlign: 'center' }}>Your cart is empty.</p>
-        {orderError && <div style={errorMessageStyle}>{orderError}</div>}
+      <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '800px' }}>
+        <h1 className="h2 border-bottom pb-2 mb-4">Your Cart</h1>
+        <p className="text-center">Your cart is empty.</p>
+        {orderError && <div className="alert alert-danger">{orderError}</div>}
       </div>
     );
   }
 
   return (
-    <div style={pageStyle}>
-      <h1 style={sectionTitleStyle}>Your Cart</h1>
-      {orderSuccess && <div style={successMessageStyle}>Your order has been placed successfully!</div>}
-      {orderError && <div style={errorMessageStyle}>{orderError}</div>}
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '800px' }}>
+      <h1 className="h2 border-bottom pb-2 mb-4">Your Cart</h1>
+      {orderSuccess && <div className="alert alert-success">Your order has been placed successfully!</div>}
+      {orderError && <div className="alert alert-danger">{orderError}</div>}
 
-      <ul style={cartListStyle}>
+      <ul className="list-group mb-4">
         {cartItems.map(item => (
-          <li key={item.id} style={cartItemStyle}>
-            <span>{item.name} x {item.quantity}</span>
-            <span>${(item.price * item.quantity).toFixed(2)}</span>
+          <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+            <span>{item.name} <span className="text-muted">x {item.quantity}</span></span>
+            <span className="fw-bold">${(item.price * item.quantity).toFixed(2)}</span>
           </li>
         ))}
       </ul>
-      <div style={totalStyle}>Total: ${calculateTotal()}</div>
+      <div className="text-end h4 fw-bold text-danger">Total: ${calculateTotal()}</div>
 
-      <h2 style={sectionTitleStyle}>Checkout Details</h2>
+      <h2 className="h3 border-bottom pb-2 mb-4 mt-5">Checkout Details</h2>
       <form onSubmit={handleSubmit}>
-        <div style={formGroupStyle}>
-          <label htmlFor="shippingAddress" style={labelStyle}>Shipping Address:</label>
+        <div className="mb-3">
+          <label htmlFor="shippingAddress" className="form-label">Shipping Address:</label>
           <input
             type="text"
             id="shippingAddress"
@@ -189,11 +103,11 @@ function OrderCartPage() {
             value={shippingAddress}
             onChange={handleInputChange}
             required
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="paymentMethod" style={labelStyle}>Payment Method:</label>
+        <div className="mb-3">
+          <label htmlFor="paymentMethod" className="form-label">Payment Method:</label>
           <input
             type="text"
             id="paymentMethod"
@@ -202,11 +116,16 @@ function OrderCartPage() {
             onChange={handleInputChange}
             placeholder="e.g., Credit Card, PayPal"
             required
-            style={inputStyle}
+            className="form-control"
           />
         </div>
-        <button type="submit" disabled={isSubmitting} style={buttonStyle}>
-          {isSubmitting ? 'Placing Order...' : 'Place Order'}
+        <button type="submit" disabled={isSubmitting} className="btn btn-success w-100 btn-lg mt-3">
+          {isSubmitting ? (
+            <>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span> Placing Order...</span>
+            </>
+          ) : 'Place Order'}
         </button>
       </form>
     </div>

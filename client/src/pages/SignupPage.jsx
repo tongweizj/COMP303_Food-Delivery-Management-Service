@@ -1,6 +1,6 @@
 // SignupPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
 
 function SignupPage() {
@@ -31,8 +31,8 @@ function SignupPage() {
       });
 
       console.log('Signup successful:', data);
-      // Optionally redirect to login page or directly log in
-      navigate('/login'); 
+      // On success, navigate to the login page with a success message
+      navigate('/login?signup=success'); 
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
       console.error('Signup error:', err);
@@ -41,116 +41,73 @@ function SignupPage() {
     }
   };
 
-  const formContainerStyle = {
-    padding: '20px',
-    maxWidth: '400px',
-    margin: '50px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '25px',
-  };
-
-  const formGroupStyle = {
-    marginBottom: '15px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#28a745', // Green color for signup
-    color: 'white',
-    padding: '12px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '1em',
-    width: '100%',
-    marginTop: '10px',
-  };
-
-  const errorStyle = {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: '15px',
-  };
-
   return (
-    <div style={formContainerStyle}>
-      <h2 style={titleStyle}>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={formGroupStyle}>
-          <label htmlFor="username" style={labelStyle}>Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="email" style={labelStyle}>Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="password" style={labelStyle}>Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        <div style={formGroupStyle}>
-          <label htmlFor="confirmPassword" style={labelStyle}>Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        {error && <p style={errorStyle}>{error}</p>}
-        <button type="submit" disabled={loading} style={buttonStyle}>
-          {loading ? 'Signing Up...' : 'Sign Up'}
-        </button>
-      </form>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+      <div className="card p-4 shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-center mb-4">Sign Up</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">Username:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="form-control"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="form-control"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-control"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="confirmPassword" className="form-label">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="form-control"
+            />
+          </div>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <button type="submit" disabled={loading} className="btn btn-success w-100">
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span> Signing Up...</span>
+              </>
+            ) : 'Sign Up'}
+          </button>
+        </form>
+        <p className="text-center mt-3">
+          Already have an account? <Link to="/login">Log In</Link>
+        </p>
+      </div>
     </div>
   );
 }

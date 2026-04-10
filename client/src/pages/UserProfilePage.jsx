@@ -79,101 +79,40 @@ function UserProfilePage() {
     }
   };
 
-  const pageStyle = {
-    padding: '20px',
-    maxWidth: '800px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '25px',
-  };
-
-  const infoGroupStyle = {
-    marginBottom: '15px',
-    borderBottom: '1px dashed #eee',
-    paddingBottom: '10px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-  };
-
-  const valueStyle = {
-    color: '#333',
-    fontSize: '1.1em',
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#007bff',
-    color: 'white',
-    padding: '10px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '0.9em',
-    marginRight: '10px',
-  };
-
-  const cancelButtonLightStyle = {
-    backgroundColor: '#6c757d', // Grey
-    color: 'white',
-    padding: '10px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '0.9em',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-    marginBottom: '10px',
-  };
-
-  const messageStyle = {
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    textAlign: 'center',
-  };
-
   if (loading && !user) { // Only show full loading if initial fetch
-    return <div style={{ ...pageStyle, textAlign: 'center' }}>Loading profile...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading profile...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ ...pageStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
+    return (
+        <div className="container mt-4">
+            <div className="alert alert-danger text-center">Error: {error}</div>
+        </div>
+    );
   }
 
   if (!user && !loading) {
-    return <div style={{ ...pageStyle, textAlign: 'center' }}>No user data available. Please log in.</div>;
+    return (
+        <div className="container mt-4">
+            <div className="alert alert-warning text-center">No user data available. Please log in.</div>
+        </div>
+    );
   }
 
   return (
-    <div style={pageStyle}>
-      <h2 style={titleStyle}>User Profile</h2>
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '800px' }}>
+      <h2 className="text-center mb-4">User Profile</h2>
 
       {submitMessage && (
         <div
-          style={{
-            ...messageStyle,
-            backgroundColor: submitMessage.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: submitMessage.type === 'success' ? '#155724' : '#721c24',
-            border: `1px solid ${submitMessage.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
-          }}
+          className={`alert ${submitMessage.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
+          role="alert"
         >
           {submitMessage.text}
         </div>
@@ -181,37 +120,37 @@ function UserProfilePage() {
 
       {!isEditing ? (
         <div>
-          <div style={infoGroupStyle}>
-            <label style={labelStyle}>Name:</label>
-            <p style={valueStyle}>{user.name || 'N/A'}</p>
+          <div className="mb-3">
+            <label className="fw-bold text-muted">Name:</label>
+            <p className="fs-5">{user.name || 'N/A'}</p>
           </div>
-          <div style={infoGroupStyle}>
-            <label style={labelStyle}>Email:</label>
-            <p style={valueStyle}>{user.email || 'N/A'}</p>
+          <div className="mb-3">
+            <label className="fw-bold text-muted">Email:</label>
+            <p className="fs-5">{user.email || 'N/A'}</p>
           </div>
-          <div style={infoGroupStyle}>
-            <label style={labelStyle}>Address:</label>
-            <p style={valueStyle}>{user.address || 'N/A'}</p>
+          <div className="mb-3">
+            <label className="fw-bold text-muted">Address:</label>
+            <p className="fs-5">{user.address || 'N/A'}</p>
           </div>
-          <button onClick={handleEditToggle} style={buttonStyle}>
+          <button onClick={handleEditToggle} className="btn btn-primary">
             Edit Profile
           </button>
         </div>
       ) : (
         <form onSubmit={handleFormSubmit}>
-          <div style={infoGroupStyle}>
-            <label htmlFor="name" style={labelStyle}>Name:</label>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Name:</label>
             <input
               type="text"
               id="name"
               name="name"
               value={formData.name}
               onChange={handleFormChange}
-              style={inputStyle}
+              className="form-control"
             />
           </div>
-          <div style={infoGroupStyle}>
-            <label htmlFor="email" style={labelStyle}>Email:</label>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email:</label>
             <input
               type="email"
               id="email"
@@ -219,24 +158,29 @@ function UserProfilePage() {
               value={formData.email}
               onChange={handleFormChange}
               required
-              style={inputStyle}
+              className="form-control"
             />
           </div>
-          <div style={infoGroupStyle}>
-            <label htmlFor="address" style={labelStyle}>Address:</label>
+          <div className="mb-3">
+            <label htmlFor="address" className="form-label">Address:</label>
             <input
               type="text"
               id="address"
               name="address"
               value={formData.address}
               onChange={handleFormChange}
-              style={inputStyle}
+              className="form-control"
             />
           </div>
-          <button type="submit" disabled={loading} style={buttonStyle}>
-            {loading ? 'Saving...' : 'Save Changes'}
+          <button type="submit" disabled={loading} className="btn btn-primary me-2">
+            {loading ? (
+                <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span> Saving...</span>
+                </>
+            ) : 'Save Changes'}
           </button>
-          <button type="button" onClick={handleEditToggle} style={cancelButtonLightStyle}>
+          <button type="button" onClick={handleEditToggle} className="btn btn-secondary">
             Cancel
           </button>
         </form>

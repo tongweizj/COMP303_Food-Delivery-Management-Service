@@ -1,22 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:fragment="layout(title, content)">
-<head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:replace="${title}">Default Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body { font-size: .875rem; }
-        .sidebar {
-            position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
-            padding: 48px 0 0; box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-        }
-        .sidebar-sticky { position: relative; top: 0; height: calc(100vh - 48px); padding-top: .5rem; overflow-x: hidden; overflow-y: auto; }
-        .navbar-brand { padding-top: .75rem; padding-bottom: .75rem; background-color: rgba(0, 0, 0, .25); box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25); }
-    </style>
-</head>
+<head th:replace="~{common/head :: head(title=${title})}"></head>
 <body>
 
 <div th:replace="common/header :: header"></div>

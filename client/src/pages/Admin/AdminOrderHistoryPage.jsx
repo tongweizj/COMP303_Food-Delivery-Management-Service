@@ -53,121 +53,78 @@ function AdminOrderHistoryPage() {
     }
   };
 
-  const pageStyle = {
-    padding: '20px',
-    maxWidth: '1200px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '25px',
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '20px',
-  };
-
-  const thStyle = {
-    border: '1px solid #ddd',
-    padding: '12px',
-    textAlign: 'left',
-    backgroundColor: '#007bff',
-    color: 'white',
-  };
-
-  const tdStyle = {
-    border: '1px solid #ddd',
-    padding: '12px',
-    textAlign: 'left',
-  };
-
-  const selectStyle = {
-    padding: '6px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-  };
-
-  const messageStyle = {
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    textAlign: 'center',
-  };
-
   if (loading) {
-    return <div style={{ ...pageStyle, textAlign: 'center' }}>Loading orders...</div>;
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading orders...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ ...pageStyle, color: 'red', textAlign: 'center' }}>Error: {error}</div>;
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-danger text-center">Error: {error}</div>
+      </div>
+    );
   }
 
   return (
-    <div style={pageStyle}>
-      <h1 style={titleStyle}>Manage Customer Orders</h1>
+    <div className="container mt-4 p-4 bg-light rounded shadow-sm">
+      <h1 className="text-center mb-4">Manage Customer Orders</h1>
 
       {updateMessage && (
         <div
-          style={{
-            ...messageStyle,
-            backgroundColor: updateMessage.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: updateMessage.type === 'success' ? '#155724' : '#721c24',
-            border: `1px solid ${updateMessage.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
-          }}
+          className={`alert ${updateMessage.type === 'success' ? 'alert-success' : 'alert-danger'} text-center`}
+          role="alert"
         >
           {updateMessage.text}
         </div>
       )}
 
       {orders.length > 0 ? (
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Order ID</th>
-              <th style={thStyle}>Customer Name</th>
-              <th style={thStyle}>Total Amount</th>
-              <th style={thStyle}>Status</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map(order => (
-              <tr key={order.id}>
-                <td style={tdStyle}>{order.id}</td>
-                <td style={tdStyle}>{order.customerName || 'N/A'}</td> {/* Assuming order object has customerName */}
-                <td style={tdStyle}>${order.totalAmount ? order.totalAmount.toFixed(2) : 'N/A'}</td>
-                <td style={tdStyle}>
-                  <select
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                    style={selectStyle}
-                    disabled={updateMessage && updateMessage.type === 'loading'} // Disable during update
-                  >
-                    {orderStatuses.map(status => (
-                      <option key={status} value={status}>{status}</option>
-                    ))}
-                  </select>
-                </td>
-                <td style={tdStyle}>
-                  {/* Additional actions like View Order Details if needed */}
-                  {/* <button>View Details</button> */}
-                </td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map(order => (
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>{order.customerName || 'N/A'}</td> {/* Assuming order object has customerName */}
+                  <td>${order.totalAmount ? order.totalAmount.toFixed(2) : 'N/A'}</td>
+                  <td>
+                    <select
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                      className="form-select form-select-sm"
+                      disabled={updateMessage && updateMessage.type === 'loading'} // Disable during update
+                    >
+                      {orderStatuses.map(status => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    {/* Additional actions like View Order Details if needed */}
+                    {/* <button>View Details</button> */}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p style={{ textAlign: 'center', color: '#777' }}>No orders found.</p>
+        <p className="text-center text-muted mt-4">No orders found.</p>
       )}
     </div>
   );
