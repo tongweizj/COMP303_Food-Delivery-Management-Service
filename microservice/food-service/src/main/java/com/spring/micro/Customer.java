@@ -2,13 +2,11 @@ package com.spring.micro;
 
 import org.springframework.data.annotation.Id;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +16,6 @@ public class Customer {
 
     private String name;
     
-    @Column(unique = true, nullable = false)
     private String email;
 
     private String phoneNumber;

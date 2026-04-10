@@ -7,6 +7,7 @@ package com.spring.micro;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Flux;
@@ -14,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class RestaurantService {
-
+	@Autowired
 	private final RestaurantRepository restaurantRepository;
 
 	// Constructor injection (Recommended by Spring)
@@ -48,7 +49,10 @@ public class RestaurantService {
 			return restaurantRepository.save(r);
 		}).switchIfEmpty(Mono.error(new RuntimeException("Restaurant not found: " + id)));
 	}
-
+	public Mono<Restaurant> save(Restaurant restaurant) {
+        // ReactiveMongoRepository 的 save 方法自带“存在即更新，不存在即插入”逻辑
+        return restaurantRepository.save(restaurant);
+    }
 	// Delete a restaurant by ID
 	// Note: Must return Mono<Void> to ensure the reactive stream pipeline executes
 	public Mono<Void> delete(String id) {
