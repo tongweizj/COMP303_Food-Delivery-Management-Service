@@ -63,7 +63,11 @@ Access Dashboard: `http://localhost:8761`
 ```bash
 cd client
 npm install
+<<<<<<< HEAD
 npm dev
+=======
+npm run dev
+>>>>>>> d254c480de497cb2a8159b0e9476b7ae6c39c844
 ```
 
 _Access Application: ` http://localhost:5173/`_
@@ -98,5 +102,8 @@ _Access Application: ` http://localhost:5173/`_
 ### Pro-Tip for your Assignment:
 
 Since you are using **React**, make sure your `api-gateway` has **CORS** configured, otherwise, the browser will block your React app from talking to the gateway!
+<<<<<<< HEAD
 
 Would you like me to show you the Java code to enable CORS in your Gateway?
+=======
+>>>>>>> d254c480de497cb2a8159b0e9476b7ae6c39c844
