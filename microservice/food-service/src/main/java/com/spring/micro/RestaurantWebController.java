@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Controller
 public class RestaurantWebController {
 	@Autowired
-    private final RestaurantService restaurantService;
+    private  RestaurantService restaurantService;
 
     // Inject the service to fetch data for the views
     public RestaurantWebController(RestaurantService restaurantService) {

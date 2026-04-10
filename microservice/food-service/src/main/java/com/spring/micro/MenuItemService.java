@@ -24,15 +24,18 @@ public class MenuItemService {
 		return menuItemReposityory.findAll();
 	}
 
-	public Mono<MenuItem> getById(long id) {
+	public Mono<MenuItem> getById(String id) {
 		return menuItemReposityory.findById(id);
 	}
 
-	public Mono<MenuItem> create(MenuItem m) {
+	public Mono<MenuItem> save(MenuItem m) {
+		if (m.getMenuItemId() != null && m.getMenuItemId().isEmpty()) {
+            m.setMenuItemId(null);
+        }
 		return menuItemReposityory.save(m);
 	}
 
-	public Mono<MenuItem> update(long id, MenuItem m) {
+	public Mono<MenuItem> update(String id, MenuItem m) {
 		m.setMenuItemId(id);
 		Mono<MenuItem> updated = menuItemReposityory.save(m);
 		if (updated == null) {
@@ -41,7 +44,12 @@ public class MenuItemService {
 		return updated;
 	}
 
-	public void delete(long id) {
-		menuItemReposityory.deleteById(id);
+	public Mono<Void> delete(String id) {
+		return menuItemReposityory.deleteById(id);
+	}
+
+	public Mono<String> deleteById(String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
