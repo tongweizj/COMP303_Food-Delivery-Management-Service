@@ -43,7 +43,7 @@ public class OrderController {
 	// Create a new order
 	@PostMapping("/api/order")
 	public Mono<Order> create(@RequestBody Order order) {
-		return orderService.create(order);
+		return orderService.save(order);
 	}
 
 	// Update an existing order by its ID

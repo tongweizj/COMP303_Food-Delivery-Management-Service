@@ -3,13 +3,92 @@
       th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 
 <head>
-    <title>Customer detail</title>
+    <title>Customer Profile</title>
 </head>
 <body>
 
 <section>
-    <h2>Customer detail</h2>
-    <p>Customer detail</p>
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/customers}">Customers</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Customer Profile</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold">
+                <i class="bi bi-person-circle me-2 text-primary"></i>
+                <span th:text="${customer?.name}">Customer Name</span>
+            </h2>
+            <div class="btn-group">
+                <a th:href="@{/customer/{id}/edit(id=${customer?.id})}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Edit Profile
+                </a>
+                <a th:href="@{/customers}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="bi bi-card-list me-2"></i> Contact Information
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-0">
+                            <small class="text-muted d-block">Customer ID</small>
+                            <span class="fw-medium text-secondary" th:text="${customer?.id}">ID</span>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <small class="text-muted d-block">Email Address</small>
+                            <a th:href="'mailto:' + ${customer?.email}" class="fw-bold text-decoration-none">
+                                <i class="bi bi-envelope me-1"></i>
+                                <span th:text="${customer?.email}">email@example.com</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <small class="text-muted d-block">Phone Number</small>
+                            <span class="fw-bold">
+                                <i class="bi bi-telephone me-1"></i>
+                                <span th:text="${customer?.phoneNumber}">Phone Number</span>
+                            </span>
+                        </li>
+                        <li class="list-group-item px-0 border-0">
+                            <small class="text-muted d-block">Registered Address</small>
+                            <p class="mb-0 fw-medium mt-1">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                <span th:text="${customer?.address}">Address text goes here...</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-5">
+                    <div class="bg-light rounded-circle p-4 mb-3">
+                        <i class="bi bi-bag-check text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="fw-bold">Order History</h4>
+                    <p class="text-muted px-4">
+                        Manage and track all orders placed by <strong><span th:text="${customer?.name}">User</span></strong>.
+                        You can view delivery status, payment history, and items ordered.
+                    </p>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <a href="#" class="btn btn-outline-success px-4">
+                            View Orders <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 </body>

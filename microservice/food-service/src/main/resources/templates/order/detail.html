@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
-
 <head>
-    <title>order detail</title>
+    <title>Order Detail</title>
 </head>
 <body>
-
 <section>
-    <h2>order detail</h2>
-    <p>order detail</p>
-</section>
+    <div class="mb-4">
+        <h2 class="fw-bold">Order Details</h2>
+        <a th:href="@{/orders}" class="btn btn-outline-secondary btn-sm">Back to List</a>
+    </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">Summary</div>
+                <div class="card-body">
+                    <p><strong>Order ID:</strong> <span th:text="${order.orderId}"></span></p>
+                    <p><strong>Customer ID:</strong> <span th:text="${order.userId}"></span></p>
+                    <p><strong>Restaurant ID:</strong> <span th:text="${order.restaurantId}"></span></p>
+                    <p><strong>Total Amount:</strong> <span class="text-success fw-bold" th:text="${'$' + order.totalAmount}"></span></p>
+                    <p><strong>Current Status:</strong> <span class="badge bg-secondary" th:text="${order.orderStatus}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">Items in Order</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="foodId : ${order.foodItemIds}">
+                            <i class="bi bi-box-seam me-2"></i> Food Item ID: <span th:text="${foodId}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

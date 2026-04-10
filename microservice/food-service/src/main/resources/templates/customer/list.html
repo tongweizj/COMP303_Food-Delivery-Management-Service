@@ -3,13 +3,76 @@
       th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 
 <head>
-    <title>Customer list</title>
+    <title>Customer Management</title>
 </head>
 <body>
 
 <section>
-    <h2>Customer list</h2>
-    <p>Customer list</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Customer Management</h2>
+            <p class="text-muted">Manage your user base, contact info, and delivery addresses.</p>
+        </div>
+        <a th:href="@{/customer/create}" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Add New Customer
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${customers}">
+                        <td class="text-secondary small" th:text="${c.id}">ID</td>
+                        <td>
+                            <strong th:text="${c.name}">Customer Name</strong>
+                        </td>
+                        <td>
+                            <a th:href="'mailto:' + ${c.email}" class="text-decoration-none">
+                                <i class="bi bi-envelope me-1"></i>
+                                <span th:text="${c.email}">email@example.com</span>
+                            </a>
+                        </td>
+                        <td th:text="${c.phoneNumber}">Phone Number</td>
+                        <td class="text-truncate" style="max-width: 200px;" th:text="${c.address}">Address</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/customer/{id}(id=${c.id})}" 
+                                   class="btn btn-sm btn-outline-secondary" title="View Profile">
+                                    <i class="bi bi-person-badge"></i>
+                                </a>
+                                <a th:href="@{/customer/{id}/edit(id=${c.id})}" 
+                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/customer/delete/{id}(id=${c.id})}" 
+                                   class="btn btn-sm btn-outline-danger" 
+                                   onclick="return confirm('Are you sure you want to remove this customer?')"
+                                   title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${customers == null}">
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            No customers found. Click "Add New Customer" to register one.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </section>
 
 </body>
