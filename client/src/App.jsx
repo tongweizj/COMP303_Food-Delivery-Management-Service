@@ -17,7 +17,7 @@ import AdminOrderHistoryPage from "./pages/Admin/AdminOrderHistoryPage";
 import BlankPage from "./pages/BlankPage";
 
 function App() {
-  // 保留 HEAD 的寫法：使用 lazy initialization 同步確認登入狀態，避免畫面閃爍
+  // Use lazy initialization to synchronously check auth state and prevent UI flicker
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem("authToken");
     return !!token;
@@ -117,7 +117,7 @@ function App() {
 
       <main className="flex-grow-1">
         <Routes>
-          {/* 前台路由 / Frontend Routes */}
+          {/* Frontend Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
           <Route path="/cart" element={<OrderCartPage />} />
@@ -125,7 +125,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
 
-          {/* 後台 (Admin) 路由 / Admin Routes */}
+          {/* Admin Routes */}
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route
             path="/admin/restaurants"
@@ -143,7 +143,7 @@ function App() {
           <Route path="/admin/food/edit/:id" element={<AdminFoodFormPage />} />
           <Route path="/admin/orders" element={<AdminOrderHistoryPage />} />
 
-          {/* 測試用路由 / Blank page for testing routing */}
+          {/* Blank page for testing routing */}
           <Route path="/blank" element={<BlankPage />} />
         </Routes>
       </main>
