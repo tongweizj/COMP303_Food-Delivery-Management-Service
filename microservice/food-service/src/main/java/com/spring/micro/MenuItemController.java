@@ -34,26 +34,26 @@ public class MenuItemController {
 
 	// 查单个
 	@GetMapping("/api/menuitem/{id}")
-	public Mono<MenuItem> getById(@PathVariable long id) {
+	public Mono<MenuItem> getById(@PathVariable String id) {
 		return menuItemService.getById(id);
 	}
 
 	// 增
 	@PostMapping("/api/menuitem")
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {
-		return menuItemService.create(m);
+		return menuItemService.save(m);
 	}
 
 	// 改
 	@PutMapping("/api/menuitem/{id}")
-	public Mono<MenuItem> updateById(@PathVariable long id, @RequestBody MenuItem m) {
+	public Mono<MenuItem> updateById(@PathVariable String id, @RequestBody MenuItem m) {
 		System.out.println("Updating menuItem: " + id);
 		return menuItemService.update(id, m);
 	}
 
 	// 删
 	@DeleteMapping("/api/menuitem/{id}")
-	public void delete(@PathVariable long id) {
+	public void delete(@PathVariable String id) {
 		System.out.println("Deleting menuItem: " + id);
 		menuItemService.delete(id);
 	}

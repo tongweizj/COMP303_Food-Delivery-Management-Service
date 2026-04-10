@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class MenuItem {
 
     @Id
-    private long menuItemId;    // 建议使用包装类 Long
+    private String menuItemId;    // 建议使用包装类 Long
     
     private String itemName;
     
@@ -28,13 +28,13 @@ public class MenuItem {
     
     private boolean availability;
     
-    private long restId;        // 保持一致性
+    private String restId;        // 保持一致性
 
-	public long getMenuItemId() {
+	public String getMenuItemId() {
 		return menuItemId;
 	}
 
-	public void setMenuItemId(Long menuItemId) {
+	public void setMenuItemId(String menuItemId) {
 		this.menuItemId = menuItemId;
 	}
 
@@ -70,11 +70,11 @@ public class MenuItem {
 		this.availability = availability;
 	}
 
-	public Long getRestId() {
+	public String getRestId() {
 		return restId;
 	}
 
-	public void setRestId(Long restId) {
+	public void setRestId(String restId) {
 		this.restId = restId;
 	}
 
