@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import UserProfilePage from './pages/UserProfilePage';
 import AdminDashboardPage from './pages/Admin/AdminDashboardPage';
+import AdminRestaurantListPage from './pages/Admin/AdminRestaurantListPage'; // Add this import
 import AdminRestaurantFormPage from './pages/Admin/AdminRestaurantFormPage';
 import AdminFoodFormPage from './pages/Admin/AdminFoodFormPage';
 import AdminOrderHistoryPage from './pages/Admin/AdminOrderHistoryPage';
@@ -25,11 +26,12 @@ function App() {
       <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
       <Route path="/cart" element={<OrderCartPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/signup" element="/signup" element={<SignupPage />} />
       <Route path="/profile" element={<UserProfilePage />} />
       
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboardPage />} />
+      <Route path="/admin/restaurants" element={<AdminRestaurantListPage />} /> {/* Add this route */}
       <Route path="/admin/restaurants/new" element={<AdminRestaurantFormPage />} />
       <Route path="/admin/restaurants/edit/:id" element={<AdminRestaurantFormPage />} />
       <Route path="/admin/food/new" element={<AdminFoodFormPage />} />
