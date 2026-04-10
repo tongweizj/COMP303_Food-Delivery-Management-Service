@@ -1,7 +1,7 @@
 // SignupPage.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
@@ -24,14 +24,13 @@ function SignupPage() {
     }
 
     try {
-      // Assume API Gateway is configured to forward /api/auth/signup to the appropriate service
-      const response = await axios.post('/api/auth/signup', {
+      const data = await authService.signup({
         username,
         email,
         password,
       });
 
-      console.log('Signup successful:', response.data);
+      console.log('Signup successful:', data);
       // Optionally redirect to login page or directly log in
       navigate('/login'); 
     } catch (err) {

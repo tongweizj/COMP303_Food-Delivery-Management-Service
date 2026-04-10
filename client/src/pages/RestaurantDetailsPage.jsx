@@ -1,7 +1,7 @@
 // RestaurantDetailsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import restaurantService from '../services/restaurantService';
 import MenuItemCard from '../components/MenuItemCard'; // Assuming MenuItemCard is in src/components
 
 function RestaurantDetailsPage() {
@@ -13,9 +13,8 @@ function RestaurantDetailsPage() {
   useEffect(() => {
     const fetchRestaurantDetails = async () => {
       try {
-        // Assume API Gateway is configured to forward /api/restaurants/:id to the food-service
-        const response = await axios.get(`/api/restaurants/${id}`); 
-        setRestaurant(response.data);
+        const data = await restaurantService.getRestaurantById(id);
+        setRestaurant(data);
       } catch (err) {
         setError('Failed to load restaurant details. Please try again later.');
         console.error(`Error fetching restaurant with ID ${id}:`, err);

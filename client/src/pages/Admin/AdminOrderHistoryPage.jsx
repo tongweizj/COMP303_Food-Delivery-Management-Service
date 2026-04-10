@@ -1,6 +1,6 @@
 // AdminOrderHistoryPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import adminOrderService from '../../services/adminOrderService';
 
 function AdminOrderHistoryPage() {
   const [orders, setOrders] = useState([]);
@@ -11,27 +11,13 @@ function AdminOrderHistoryPage() {
   // Placeholder for possible order statuses
   const orderStatuses = ['PENDING', 'PROCESSING', 'DELIVERED', 'CANCELLED'];
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   const fetchOrders = async () => {
-    const token = getAuthToken();
-    if (!token) {
-      setError('Authentication required. Please log in as an administrator.');
-      setLoading(false);
-      return;
-    }
-
     try {
-      // Assume API Gateway is configured to forward /api/admin/orders to the appropriate service
-      const response = await axios.get('/api/admin/orders', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setOrders(response.data);
+      // The service now handles authentication checks
+      const data = await adminOrderService.getAllOrders();
+      setOrders(data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load orders.');
+      setError(err.response?.data?.message || 'Failed to load orders. You may need to log in.');
       console.error('Error fetching admin orders:', err);
     } finally {
       setLoading(false);
@@ -39,18 +25,21 @@ function AdminOrderHistoryPage() {
   };
 
   useEffect(() => {
+    // Check for token before initial fetch
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('Authentication required. Please log in as an administrator.');
+      setLoading(false);
+      return;
+    }
     fetchOrders();
   }, []);
 
   const handleStatusChange = async (orderId, newStatus) => {
     setUpdateMessage(null);
-    const token = getAuthToken();
 
     try {
-      // Assume API Gateway is configured to forward PUT /api/admin/orders/:id/status
-      await axios.put(`/api/admin/orders/${orderId}/status`, { status: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await adminOrderService.updateOrderStatus(orderId, newStatus);
       setUpdateMessage({ type: 'success', text: `Order ${orderId} status updated to ${newStatus}!` });
       // Update local state
       setOrders(prevOrders =>

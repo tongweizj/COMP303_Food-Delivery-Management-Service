@@ -1,7 +1,7 @@
 // LoginPage.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 
 function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -16,20 +16,19 @@ function LoginPage() {
     setError(null);
 
     try {
-      // Assume API Gateway is configured to forward /api/auth/login to the appropriate service
-      const response = await axios.post('/api/auth/login', {
+      const data = await authService.login({
         usernameOrEmail,
         password,
       });
 
       // Placeholder for handling successful login
       // In a real app, you would store the received token (e.g., JWT) in localStorage
-      const token = response.data.token; 
+      const token = data.token; 
       if (token) {
         localStorage.setItem('authToken', token);
         // Redirect to a protected page or home
         navigate('/profile'); // Redirect to user profile or home
-        console.log('Login successful:', response.data);
+        console.log('Login successful:', data);
       } else {
         setError('Login successful, but no token received.');
       }

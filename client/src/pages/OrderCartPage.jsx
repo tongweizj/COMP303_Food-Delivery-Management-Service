@@ -1,6 +1,6 @@
 // OrderCartPage.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import orderService from '../services/orderService';
 
 function OrderCartPage() {
   // Placeholder for cart items. In a real app, this would come from global state (Context, Redux, etc.)
@@ -50,18 +50,14 @@ function OrderCartPage() {
         // Add more fields like userId, restaurantId if necessary
       };
       
-      // Assume API Gateway is configured to forward /api/orders to the food-service
-      const response = await axios.post('/api/orders', orderData);
+      const data = await orderService.createOrder(orderData);
       
-      if (response.status === 201 || response.status === 200) {
-        setOrderSuccess(true);
-        setCartItems([]); // Clear cart after successful order
-        setShippingAddress('');
-        setPaymentMethod('');
-        console.log('Order submitted successfully:', response.data);
-      } else {
-        setOrderError(response.data.message || 'Failed to submit order.');
-      }
+      setOrderSuccess(true);
+      setCartItems([]); // Clear cart after successful order
+      setShippingAddress('');
+      setPaymentMethod('');
+      console.log('Order submitted successfully:', data);
+
     } catch (err) {
       setOrderError(err.response?.data?.message || 'Error submitting order. Please check your network or try again.');
       console.error('Order submission error:', err);

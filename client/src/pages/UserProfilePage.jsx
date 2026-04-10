@@ -1,6 +1,6 @@
 // UserProfilePage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import userService from '../services/userService';
 
 function UserProfilePage() {
   const [user, setUser] = useState(null);
@@ -14,39 +14,31 @@ function UserProfilePage() {
   });
   const [submitMessage, setSubmitMessage] = useState(null); // For success/error message on update
 
-  // Function to get auth token (placeholder)
-  const getAuthToken = () => {
-    return localStorage.getItem('authToken'); // Replace with your actual token retrieval logic
-  };
-
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const token = getAuthToken();
-      if (!token) {
-        setError('You must be logged in to view your profile.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        // Assume API Gateway is configured to forward /api/users/profile to the appropriate service
-        const response = await axios.get('/api/users/profile', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(response.data);
+        const data = await userService.getUserProfile();
+        setUser(data);
         setFormData({
-          name: response.data.name || '',
-          email: response.data.email || '',
-          address: response.data.address || '',
+          name: data.name || '',
+          email: data.email || '',
+          address: data.address || '',
         });
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch user profile.');
+        setError(err.response?.data?.message || 'Failed to fetch user profile. You may need to log in again.');
         console.error('Fetch user profile error:', err);
       } finally {
         setLoading(false);
       }
     };
 
+    // Check for token existence before fetching
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('You must be logged in to view your profile.');
+      setLoading(false);
+      return;
+    }
     fetchUserProfile();
   }, []);
 
@@ -72,17 +64,13 @@ function UserProfilePage() {
     e.preventDefault();
     setLoading(true); // Set loading for form submission
     setSubmitMessage(null);
-    const token = getAuthToken();
 
     try {
-      // Assume API Gateway is configured to forward /api/users/profile PUT to the appropriate service
-      const response = await axios.put('/api/users/profile', formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data); // Update local user state with new data
+      const updatedUser = await userService.updateUserProfile(formData);
+      setUser(updatedUser); // Update local user state with new data
       setIsEditing(false); // Exit edit mode
       setSubmitMessage({ type: 'success', text: 'Profile updated successfully!' });
-      console.log('Profile updated:', response.data);
+      console.log('Profile updated:', updatedUser);
     } catch (err) {
       setSubmitMessage({ type: 'error', text: err.response?.data?.message || 'Failed to update profile.' });
       console.error('Update profile error:', err);
