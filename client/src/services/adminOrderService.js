@@ -17,6 +17,11 @@ const adminOrderService = {
     const response = await apiClient.put(`/admin/orders/${orderId}/status`, { status }, { headers: getAuthHeaders() });
     return response.data;
   },
+
+  async deleteOrder(orderId) {
+    const response = await apiClient.delete(`/admin/orders/${orderId}`, { headers: getAuthHeaders() });
+    return response.data;
+  },
 };
 
 export default adminOrderService;

@@ -8,6 +8,11 @@ const getAuthHeaders = () => {
 };
 
 const adminMenuItemService = {
+  async getAllMenuItems() {
+    const response = await apiClient.get('/admin/menuitems', { headers: getAuthHeaders() });
+    return response.data;
+  },
+
   async getMenuItemById(id) {
     const response = await apiClient.get(`/admin/menuitems/${id}`, { headers: getAuthHeaders() });
     return response.data;
@@ -20,6 +25,11 @@ const adminMenuItemService = {
 
   async updateMenuItem(id, menuItemData) {
     const response = await apiClient.put(`/admin/menuitems/${id}`, menuItemData, { headers: getAuthHeaders() });
+    return response.data;
+  },
+
+  async deleteMenuItem(id) {
+    const response = await apiClient.delete(`/admin/menuitems/${id}`, { headers: getAuthHeaders() });
     return response.data;
   },
 };

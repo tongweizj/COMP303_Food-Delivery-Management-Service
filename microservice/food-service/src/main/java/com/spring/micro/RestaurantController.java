@@ -35,19 +35,19 @@ public class RestaurantController {
 	}
 
 	// Retrieve a single restaurant by its ID
-	@GetMapping("/api/restaurant/{id}")
+	@GetMapping("/api/restaurants/{id}")
 	public Mono<Restaurant> getById(@PathVariable String id) {
 		return restaurantService.getById(id);
 	}
 
 	// Create a new restaurant
-	@PostMapping("/api/restaurant")
+	@PostMapping("/api/restaurants")
 	public Mono<Restaurant> create(@RequestBody Restaurant restaurant) {
 		return restaurantService.create(restaurant);
 	}
 
 	// Update an existing restaurant by its ID
-	@PutMapping("/api/restaurant/{id}")
+	@PutMapping("/api/restaurants/{id}")
 	public Mono<Restaurant> updateById(@PathVariable String id, @RequestBody Restaurant restaurant) {
 		System.out.println("Updating restaurant: " + id);
 		return restaurantService.update(id, restaurant);
@@ -56,7 +56,7 @@ public class RestaurantController {
 	// Delete a restaurant by its ID
 	// Note: In WebFlux, void methods must return Mono<Void> to properly signal
 	// completion
-	@DeleteMapping("/api/restaurant/{id}")
+	@DeleteMapping("/api/restaurants/{id}")
 	public Mono<Void> delete(@PathVariable String id) {
 		System.out.println("Deleting restaurant: " + id);
 		return restaurantService.delete(id);

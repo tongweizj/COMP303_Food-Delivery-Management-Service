@@ -1,55 +1,98 @@
 /* 
 Author: Xuan Tri Nguyen - 301388576
+Refactored by Gemini to use services and Bootstrap.
  */
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
+import adminMenuItemService from '../../services/adminMenuItemService';
 
 export default function AdminFoodPage() {
-  const [foods, setFoods] = useState([]);
-  const API_URL = 'http://localhost:8080/api/foods';
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => { fetchFoods(); }, []);
-
-  const fetchFoods = async () => {
+  const fetchMenuItems = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await axios.get(API_URL);
-      setFoods(response.data);
-    } catch (error) { console.error("Error fetching foods", error); }
+      const data = await adminMenuItemService.getAllMenuItems();
+      setMenuItems(data);
+    } catch (error) {
+      console.error("Error fetching menu items", error);
+      setError(error.response?.data?.message || "Failed to fetch menu items.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this menu item?")) {
+      return;
+    }
     try {
-      await axios.delete(`${API_URL}/${id}`);
-      fetchFoods();
-    } catch (error) { console.error("Error deleting", error); }
+      await adminMenuItemService.deleteMenuItem(id);
+      // Refresh the list after deletion
+      setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting menu item", error);
+      setError(error.response?.data?.message || "Failed to delete menu item.");
+    }
   };
 
+  if (loading) {
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading menu items...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2>Admin: Manage Food Items</h2>
-      <button>Add New Food Item</button>
-      <table border="1" style={{ width: '100%', marginTop: '10px' }}>
-        <thead>
-          <tr>
-            <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Available</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {foods.map(item => (
-            <tr key={item.foodId}>
-              <td>{item.foodId}</td>
-              <td>{item.foodName}</td>
-              <td>{item.category}</td>
-              <td>${item.price}</td>
-              <td>{item.availabilityStatus ? 'Yes' : 'No'}</td>
-              <td>
-                <button>Edit</button>
-                <button onClick={() => handleDelete(item.foodId)}>Delete</button>
-              </td>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin: Manage Menu Items</h1>
+        <Link to="/admin/food/new" className="btn btn-primary">Add New Item</Link>
+      </div>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <div className="table-responsive">
+        <table className="table table-striped table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Restaurant ID</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {menuItems.map(item => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>${item.price ? item.price.toFixed(2) : 'N/A'}</td>
+                <td>{item.restaurantId || 'N/A'}</td>
+                <td>
+                  <Link to={`/admin/food/edit/${item.id}`} className="btn btn-success btn-sm me-2">
+                    Edit
+                  </Link>
+                  <button onClick={() => handleDelete(item.id)} className="btn btn-danger btn-sm">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -7,32 +7,33 @@ function AdminRestaurantFormPage() {
   const { id } = useParams(); // Get restaurant ID from URL for edit mode
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    imageUrl: '',
-    address: '', // Added address for a more complete restaurant form
+    restaurantName: '',
+    cuisineType: '',
+    city: '',
+    rating: '',
+    deliveryTime: '',
   });
-  const [loading, setLoading] = useState(true); // For initial fetch in edit mode
-  const [submitLoading, setSubmitLoading] = useState(false); // For form submission
+  const [loading, setLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [submitMessage, setSubmitMessage] = useState(null); // Success/error message after submit
+  const [submitMessage, setSubmitMessage] = useState(null);
 
-  const isEditMode = Boolean(id);
+  const isEditMode = id && id !== 'new';
 
   useEffect(() => {
-    // Check for token before any action
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      setError('Authentication required for this page.');
-      setLoading(false);
-      return;
-    }
-
     if (isEditMode) {
+      setLoading(true);
       const fetchRestaurant = async () => {
         try {
           const data = await adminRestaurantService.getRestaurantById(id);
-          setFormData(data);
+          // Ensure data fields are correctly mapped to the form state
+          setFormData({
+            restaurantName: data.restaurantName || '',
+            cuisineType: data.cuisineType || '',
+            city: data.city || '',
+            rating: data.rating || '',
+            deliveryTime: data.deliveryTime || '',
+          });
         } catch (err) {
           setError(err.response?.data?.message || 'Failed to fetch restaurant data for editing.');
           console.error('Error fetching restaurant for edit:', err);
@@ -57,30 +58,34 @@ function AdminRestaurantFormPage() {
     setSubmitMessage(null);
     setError(null);
 
-    // Token check before submission
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      setError('Authentication required for this action.');
-      setSubmitLoading(false);
-      return;
-    }
-
     try {
+      const payload = {
+        ...formData,
+        rating: parseFloat(formData.rating) || 0,
+        deliveryTime: parseFloat(formData.deliveryTime) || 0,
+      };
+
       if (isEditMode) {
-        await adminRestaurantService.updateRestaurant(id, formData);
+        await adminRestaurantService.updateRestaurant(id, payload);
         setSubmitMessage({ type: 'success', text: 'Restaurant updated successfully!' });
       } else {
-        await adminRestaurantService.createRestaurant(formData);
+        await adminRestaurantService.createRestaurant(payload);
         setSubmitMessage({ type: 'success', text: 'Restaurant added successfully!' });
-        setFormData({ name: '', description: '', imageUrl: '', address: '' }); // Clear form after add
+        // Clear form after successful creation
+        setFormData({
+          restaurantName: '',
+          cuisineType: '',
+          city: '',
+          rating: '',
+          deliveryTime: '',
+        });
       }
-      // Use a timeout to allow user to see the success message before navigating
       setTimeout(() => navigate('/admin/restaurants'), 1500);
     } catch (err) {
       const errorMessage = err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'add'} restaurant.`;
       setSubmitMessage({ type: 'error', text: errorMessage });
       setError(errorMessage);
-      console.error(`Error ${isEditMode ? 'updating' : 'adding'} restaurant:`, err);
+      console.error(`Error submitting restaurant form:`, err);
     } finally {
       setSubmitLoading(false);
     }
@@ -96,7 +101,7 @@ function AdminRestaurantFormPage() {
     );
   }
 
-  if (error && !submitMessage) { // Only show general error if there is no specific submit message
+  if (error && !submitMessage) {
     return (
       <div className="container mt-4">
         <div className="alert alert-danger text-center">Error: {error}</div>
@@ -119,50 +124,69 @@ function AdminRestaurantFormPage() {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="name" className="form-label">Restaurant Name:</label>
+          <label htmlFor="restaurantName" className="form-label">Restaurant Name:</label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="restaurantName"
+            name="restaurantName"
+            value={formData.restaurantName}
             onChange={handleInputChange}
             required
             className="form-control"
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">Description:</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
+          <label htmlFor="cuisineType" className="form-label">Cuisine Type:</label>
+          <input
+            type="text"
+            id="cuisineType"
+            name="cuisineType"
+            value={formData.cuisineType}
             onChange={handleInputChange}
             required
-            rows="4"
-            className="form-control"
-          ></textarea>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="imageUrl" className="form-label">Image URL:</label>
-          <input
-            type="text"
-            id="imageUrl"
-            name="imageUrl"
-            value={formData.imageUrl}
-            onChange={handleInputChange}
             className="form-control"
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="address" className="form-label">Address:</label>
+          <label htmlFor="city" className="form-label">City:</label>
           <input
             type="text"
-            id="address"
-            name="address"
-            value={formData.address}
+            id="city"
+            name="city"
+            value={formData.city}
             onChange={handleInputChange}
+            required
             className="form-control"
           />
+        </div>
+        <div className="row">
+            <div className="col-md-6 mb-3">
+                <label htmlFor="rating" className="form-label">Rating:</label>
+                <input
+                    type="number"
+                    id="rating"
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    step="0.1"
+                    min="0"
+                    max="5"
+                />
+            </div>
+            <div className="col-md-6 mb-3">
+                <label htmlFor="deliveryTime" className="form-label">Delivery Time (minutes):</label>
+                <input
+                    type="number"
+                    id="deliveryTime"
+                    name="deliveryTime"
+                    value={formData.deliveryTime}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    step="1"
+                    min="0"
+                />
+            </div>
         </div>
         <button type="submit" disabled={submitLoading} className="btn btn-primary w-100 mt-3">
           {submitLoading ? (

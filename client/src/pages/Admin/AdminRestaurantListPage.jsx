@@ -1,7 +1,7 @@
 // AdminRestaurantListPage.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import adminRestaurantService from "../../services/adminRestaurantService";
 
 function AdminRestaurantListPage() {
   const [restaurants, setRestaurants] = useState([]);
@@ -10,35 +10,17 @@ function AdminRestaurantListPage() {
   const [deleteMessage, setDeleteMessage] = useState(null); // For delete operation status
   const navigate = useNavigate();
 
-  // Placeholder for getting auth token (if needed for this endpoint)
-  const getAuthToken = () => {
-    return localStorage.getItem("authToken"); // Replace with your actual token retrieval logic
-  };
-
   const fetchRestaurants = async () => {
     setLoading(true);
     setError(null);
     setDeleteMessage(null); // Clear previous messages on fetch
 
-    // For this specific endpoint, the user specified http://localhost:8084/api/restaurants
-    // It's unclear if this particular endpoint requires authentication.
-    // Assuming it *might* not for a public listing, but typically admin operations do.
-    // If it requires auth, uncomment the token check and header below.
-    const token = getAuthToken();
-    // if (!token) {
-    //   setError('Authentication required. Please log in as an administrator.');
-    //   setLoading(false);
-    //   return;
-    // }
-
     try {
-      const response = await axios.get(
-        "http://localhost:8084/api/restaurants",
-        // , { headers: { Authorization: `Bearer ${token}` } } // Uncomment if auth is needed
-      );
-      setRestaurants(response.data);
+      // Use the service to fetch restaurants
+      const data = await adminRestaurantService.getAllRestaurants();
+      setRestaurants(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load restaurants.");
+      setError(err.response?.data?.message || "Failed to load restaurants. Ensure you are logged in as an admin.");
       console.error("Error fetching admin restaurants:", err);
     } finally {
       setLoading(false);
@@ -57,29 +39,19 @@ function AdminRestaurantListPage() {
     ) {
       return;
     }
+
     setDeleteMessage(null);
     setLoading(true); // Indicate loading for the delete operation
-    const token = getAuthToken();
-
-    //  This needs to be uncommented after login functionality is implemented.
-    // if (!token) {
-    //   setDeleteMessage({ type: 'error', text: 'Authentication required to delete restaurant.' });
-    //   setLoading(false);
-    //   return;
-    // }
 
     try {
-      // User specified http://localhost:8084/api/restaurants for GET, assuming DELETE uses similar base.
-      await axios.delete(
-        `http://localhost:8084/api/restaurants/${restaurantId}`,
-        {
-          // headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      // Use the service to delete the restaurant
+      await adminRestaurantService.deleteRestaurant(restaurantId);
+
       setDeleteMessage({
         type: "success",
         text: "Restaurant deleted successfully!",
       });
+
       // Remove the deleted restaurant from local state to update UI
       setRestaurants((prevRestaurants) =>
         prevRestaurants.filter((r) => r.id !== restaurantId),
@@ -119,7 +91,9 @@ function AdminRestaurantListPage() {
       <h1 className="text-center mb-4">Manage Restaurants</h1>
       {deleteMessage && (
         <div
-          className={`alert ${deleteMessage.type === "success" ? "alert-success" : "alert-danger"} text-center`}
+          className={`alert ${
+            deleteMessage.type === "success" ? "alert-success" : "alert-danger"
+          } text-center`}
           role="alert"
         >
           {deleteMessage.text}
@@ -145,7 +119,7 @@ function AdminRestaurantListPage() {
             <tbody>
               {restaurants.map((restaurant) => (
                 <tr key={restaurant.restaurantId}>
-                  <td>{restaurant.restaurantName}</td>
+                  <td>{restaurant.restaurantName || restaurant.name}</td>
                   <td>{restaurant.cuisineType || "N/A"}</td>
                   <td>{restaurant.city || "N/A"}</td>
                   <td>
@@ -153,7 +127,7 @@ function AdminRestaurantListPage() {
                   </td>
                   <td>
                     <Link
-                      to={`/admin/restaurants/edit/${restaurant.id}`}
+                      to={`/admin/restaurants/edit/${restaurant.restaurantId}`}
                       className="btn btn-success btn-sm me-2"
                     >
                       Edit
@@ -180,3 +154,4 @@ function AdminRestaurantListPage() {
 }
 
 export default AdminRestaurantListPage;
+
