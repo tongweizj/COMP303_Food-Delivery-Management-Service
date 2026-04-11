@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
 
 const adminRestaurantService = {
   async getAllRestaurants() {
-    const response = await apiClient.get('/admin/restaurants', { headers: getAuthHeaders() });
+    const response = await apiClient.get('/restaurants', { headers: getAuthHeaders() });
     return response.data;
   },
 

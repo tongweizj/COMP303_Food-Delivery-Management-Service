@@ -14,15 +14,8 @@ import org.springframework.web.client.RestClientException;
 public class FoodDeliveryMicroSerApplication {
 
 	public static void main(String[] args) throws RestClientException, IOException {
-		ApplicationContext ctx = SpringApplication.run(FoodDeliveryMicroSerApplication.class, args);
-		EmployeeServiceController employeeServiceController = ctx.getBean(EmployeeServiceController.class);
-		System.out.println(employeeServiceController);
-		employeeServiceController.getEmployee();
-	}
-
-	@Bean
-	public EmployeeServiceController employeeServiceController() {
-		return new EmployeeServiceController();
+		SpringApplication.run(FoodDeliveryMicroSerApplication.class, args);
+		System.out.print("API-Gateway is running");
 	}
 
 }
