@@ -118,7 +118,7 @@ function AdminRestaurantListPage() {
             </thead>
             <tbody>
               {restaurants.map((restaurant) => (
-                <tr key={restaurant.id}>
+                <tr key={restaurant.restaurantId}>
                   <td>{restaurant.restaurantName || restaurant.name}</td>
                   <td>{restaurant.cuisineType || "N/A"}</td>
                   <td>{restaurant.city || "N/A"}</td>
@@ -127,7 +127,7 @@ function AdminRestaurantListPage() {
                   </td>
                   <td>
                     <Link
-                      to={`/admin/restaurants/edit/${restaurant.id}`}
+                      to={`/admin/restaurants/edit/${restaurant.restaurantId}`}
                       className="btn btn-success btn-sm me-2"
                     >
                       Edit
