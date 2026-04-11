@@ -1,24 +1,68 @@
-import apiClient from './apiClient';
+import apiClient from "./apiClient";
 
 const restaurantService = {
   async getAllRestaurants() {
-    const response = await apiClient.get('/restaurants');
-    return response.data;
+    console.log(`[API] GET, Target: /restaurants`);
+    try {
+      const response = await apiClient.get("/restaurants");
+      console.log(
+        `[API] GET Get all restaurants, Status Code: ${response.status}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        `[API] GET request failed, Error Message: ${error.message}`,
+      );
+      throw error;
+    }
   },
 
   async getRestaurantById(id) {
-    const response = await apiClient.get(`/restaurants/${id}`);
-    return response.data;
+    console.log(`[API] GET, Target: /restaurants/${id}`);
+    try {
+      const response = await apiClient.get(`/restaurants/${id}`);
+      console.log(
+        `[API] GET Get restaurant by ID, Status Code: ${response.status}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        `[API] GET request failed, Error Message: ${error.message}`,
+      );
+      throw error;
+    }
   },
 
   async createRestaurant(restaurantData) {
-    const response = await apiClient.post('/restaurants', restaurantData);
-    return response.data;
+    console.log(`[API] POST, Target: /restaurants`);
+    try {
+      const response = await apiClient.post("/restaurants", restaurantData);
+      console.log(
+        `[API] POST Create restaurant, Status Code: ${response.status}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        `[API] POST request failed, Error Message: ${error.message}`,
+      );
+      throw error;
+    }
   },
 
   async deleteRestaurant(id) {
-    const response = await apiClient.delete(`/restaurants/${id}`);
-    return response.data;
+    console.log(`[API] DELETE, Target: /restaurants/${id}`);
+    try {
+      const response = await apiClient.delete(`/restaurants/${id}`);
+      console.log(
+        `[API] DELETE Delete restaurant, Status Code: ${response.status}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        `[API] DELETE request failed, Error Message: ${error.message}`,
+      );
+      throw error;
+    }
   },
 };
 

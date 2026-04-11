@@ -19,8 +19,16 @@ const adminRestaurantService = {
   },
 
   async createRestaurant(restaurantData) {
-    const response = await apiClient.post('/admin/restaurants', restaurantData, { headers: getAuthHeaders() });
-    return response.data;
+    console.log('AdminRestaurantService createRestaurant called with data:', restaurantData);
+
+    try {
+      const response = await apiClient.post('/restaurants', restaurantData, { headers: getAuthHeaders() });
+      console.log('Create restaurant response:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error in createRestaurant:', error);
+      throw error;
+    }    
   },
 
   async updateRestaurant(id, restaurantData) {
