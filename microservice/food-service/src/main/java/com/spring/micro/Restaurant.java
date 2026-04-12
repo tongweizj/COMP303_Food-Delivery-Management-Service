@@ -29,6 +29,16 @@ public class Restaurant {
 
 	// As per assignment requirements: restaurant name
 	private String restaurantName;
+	
+	private String coverImageUrl;
+
+	public String getCoverImageUrl() {
+		return coverImageUrl;
+	}
+
+	public void setCoverImageUrl(String coverImageUrl) {
+		this.coverImageUrl = coverImageUrl;
+	}
 
 	// As per assignment requirements: cuisine type
 	private String cuisineType;
