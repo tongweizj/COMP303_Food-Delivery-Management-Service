@@ -18,9 +18,10 @@ const restaurantService = {
   },
 
   async getRestaurantById(id) {
-    console.log(`[API] GET, Target: /restaurants/${id}`);
+    console.log(`[API] GET, Target: /restaurant/${id}`);
     try {
-      const response = await apiClient.get(`/restaurants/${id}`);
+      const response = await apiClient.get(`/restaurant/${id}`);
+      console.log(`[API] GET Get restaurant by ID, data: ${response.data}`);
       console.log(
         `[API] GET Get restaurant by ID, Status Code: ${response.status}`,
       );

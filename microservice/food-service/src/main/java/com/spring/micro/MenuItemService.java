@@ -27,6 +27,9 @@ public class MenuItemService {
 	public Mono<MenuItem> getById(String id) {
 		return menuItemReposityory.findById(id);
 	}
+	public Flux<MenuItem> getByRestaurantId(String restId) {
+	    return menuItemReposityory.findByRestId(restId);
+	}
 
 	public Mono<MenuItem> save(MenuItem m) {
 		if (m.getMenuItemId() != null && m.getMenuItemId().isEmpty()) {
