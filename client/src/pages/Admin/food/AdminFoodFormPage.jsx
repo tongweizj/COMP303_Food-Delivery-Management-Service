@@ -1,8 +1,8 @@
 // AdminFoodFormPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import adminRestaurantService from '../../services/adminRestaurantService';
-import adminMenuItemService from '../../services/adminMenuItemService';
+import adminRestaurantService from '../../../services/adminRestaurantService';
+import adminMenuItemService from '../../../services/adminMenuItemService';
 
 function AdminFoodFormPage() {
   const { id } = useParams(); // Get menu item ID from URL for edit mode

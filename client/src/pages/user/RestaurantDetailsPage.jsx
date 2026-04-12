@@ -1,8 +1,8 @@
 // RestaurantDetailsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import restaurantService from '../services/restaurantService';
-import MenuItemCard from '../components/MenuItemCard'; // Assuming MenuItemCard is in src/components
+import restaurantService from '../../services/restaurantService';
+import MenuItemCard from '../../components/common/MenuItemCard'; // Assuming MenuItemCard is in src/components
 
 function RestaurantDetailsPage() {
   const { id } = useParams(); // Read restaurant ID from URL params

@@ -1,6 +1,6 @@
 // UserProfilePage.jsx
 import React, { useState, useEffect } from 'react';
-import userService from '../services/userService';
+import userService from '../../services/userService';
 
 function UserProfilePage() {
   const [user, setUser] = useState(null);

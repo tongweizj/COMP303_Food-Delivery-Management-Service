@@ -1,7 +1,7 @@
 // HomePage.jsx
 import React, { useState, useEffect } from 'react';
-import restaurantService from '../services/restaurantService';
-import RestaurantCard from '../components/RestaurantCard'; // Assuming RestaurantCard is in src/components
+import restaurantService from '../../services/restaurantService';
+import RestaurantCard from '../../components/common/RestaurantCard'; // Assuming RestaurantCard is in src/components
 
 function HomePage() {
   const [restaurants, setRestaurants] = useState([]);
