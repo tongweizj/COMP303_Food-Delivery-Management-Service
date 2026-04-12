@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.dto;
 
 public class SignupRequest {
 

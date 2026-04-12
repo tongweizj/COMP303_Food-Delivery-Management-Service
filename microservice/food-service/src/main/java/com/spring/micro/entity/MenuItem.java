@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.entity;
 
 /* Author: Wei Tong
  * COMP 303 - Enterprise App Development

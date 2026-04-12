@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.service;
 
 /* Author: Wei Tong 301034450
  * COMP 303 - Enterprise App Development
@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.spring.micro.entity.Restaurant;
+import com.spring.micro.repository.RestaurantRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

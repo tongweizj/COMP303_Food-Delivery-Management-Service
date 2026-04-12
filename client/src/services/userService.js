@@ -1,9 +1,9 @@
 // src/services/userService.js
-import apiClient from './apiClient';
+import apiClient from "./apiClient";
 
 // Helper to get the token from localStorage
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem("authToken");
   if (!token) {
     // It's better to handle this case in the component logic (e.g., redirect to login)
     // rather than letting the API call fail without authorization.
@@ -14,14 +14,14 @@ const getAuthHeaders = () => {
 
 const userService = {
   async getUserProfile() {
-    const response = await apiClient.get('/users/profile', {
+    const response = await apiClient.get("/user/profile", {
       headers: getAuthHeaders(),
     });
     return response.data;
   },
 
   async updateUserProfile(profileData) {
-    const response = await apiClient.put('/users/profile', profileData, {
+    const response = await apiClient.put("/user/profile", profileData, {
       headers: getAuthHeaders(),
     });
     return response.data;

@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,13 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.spring6.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring6.context.webflux.ReactiveDataDriverContextVariable;
+
+import com.spring.micro.entity.MenuItem;
+import com.spring.micro.service.MenuItemService;
 
 import reactor.core.publisher.Mono;
 
 
 @Controller
+@RequestMapping("/menuitems")
 public class MenuItemWebController {
 	@Autowired
     private  MenuItemService menuItemService;
@@ -21,7 +26,7 @@ public class MenuItemWebController {
     public MenuItemWebController(MenuItemService menuItemService) {
         this.menuItemService = menuItemService;
     }
-	@GetMapping("/menuitems")
+	@GetMapping
 	public String foods(Model model) {
 		IReactiveDataDriverContextVariable reactiveData = 
 	            new ReactiveDataDriverContextVariable(menuItemService.getAll(), 1);
@@ -30,13 +35,13 @@ public class MenuItemWebController {
 		return "menuitem/list"; // 对应 templates/index.html
 	}
 	
-	@GetMapping("/menuitem/create")
+	@GetMapping("/create")
 	public String createFood(Model model) {
 		model.addAttribute("menuItem", new MenuItem());
 		return "menuitem/form"; // 对应 templates/index.html
 	}
 	
-	@GetMapping("/menuitem/{id}/edit")
+	@GetMapping("/{id}/edit")
 	public Mono<String> editFood(@PathVariable("id") String id, Model model) {
 
 		return menuItemService.getById(id)
@@ -52,7 +57,7 @@ public class MenuItemWebController {
 	            .defaultIfEmpty("redirect:/menuitems"); // 对应 templates/index.html
 	}
 	
-	@GetMapping("/menuitem/{id}")
+	@GetMapping("/{id}")
 	public Mono<String> detailFood(@PathVariable("id") String id, Model model) {
 
 		return menuItemService.getById(id)
@@ -68,13 +73,13 @@ public class MenuItemWebController {
 	            .defaultIfEmpty("redirect:/menuitems");
 	}
 	
-	@PostMapping("/menuitem/save")
+	@PostMapping("/save")
 	public Mono<String> saveMenuItem(@ModelAttribute("menuItem") MenuItem menuItem) {
 	    return menuItemService.save(menuItem) // 调用 Reactive Repository
 	            .thenReturn("redirect:/menuitems");
 	}
 	
-	@GetMapping("/menuitem/delete/{id}")
+	@GetMapping("/delete/{id}")
 	public Mono<String> deleteMenuItem(@PathVariable String id) {
 	    return menuItemService.delete(id)
 	            .doOnSuccess(v -> System.out.println("Deleted menu item: " + id))

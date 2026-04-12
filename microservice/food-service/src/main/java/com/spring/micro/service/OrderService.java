@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.service;
 
 /* Author: Wei Tong 301034450
  * COMP 303 - Enterprise App Development
@@ -8,6 +8,9 @@ package com.spring.micro;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.spring.micro.entity.Order;
+import com.spring.micro.repository.OrderRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

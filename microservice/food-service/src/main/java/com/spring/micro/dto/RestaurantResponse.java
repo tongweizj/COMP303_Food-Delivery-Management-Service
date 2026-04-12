@@ -1,16 +1,19 @@
-package com.spring.micro;
+package com.spring.micro.dto;
 
 import java.util.List;
 
-public class RestaurantDetail {
+import com.spring.micro.entity.MenuItem;
+import com.spring.micro.entity.Restaurant;
+
+public class RestaurantResponse {
 
     private Restaurant restaurant;
     private List<MenuItem> menuItems;
 
-    public RestaurantDetail() {
+    public RestaurantResponse() {
     }
 
-    public RestaurantDetail(Restaurant restaurant, List<MenuItem> menuItems) {
+    public RestaurantResponse(Restaurant restaurant, List<MenuItem> menuItems) {
         this.restaurant = restaurant;
         this.menuItems = menuItems;
     }

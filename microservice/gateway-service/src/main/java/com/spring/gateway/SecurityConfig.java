@@ -17,19 +17,32 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
 
                 .authorizeExchange(exchanges -> exchanges
-                        // 餐厅查询公开
+                		// preflight
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
+
+                        // auth public
+                        .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+
+                        // public read
                         .pathMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/restaurant/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/menuitems/**").permitAll()
 
-                        // 餐厅写操作需要登录
-                        .pathMatchers(HttpMethod.POST, "/api/restaurant/**").authenticated()
-                        .pathMatchers(HttpMethod.PUT, "/api/restaurant/**").authenticated()
-                        .pathMatchers(HttpMethod.DELETE, "/api/restaurant/**").authenticated()
+                        // users protected
+                        .pathMatchers("/api/users/**").authenticated()
 
-                        // 例如登录接口公开
-                        .pathMatchers("/api/auth/**").permitAll()
+                        // restaurants write protected
+                        .pathMatchers(HttpMethod.POST, "/api/restaurants/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated()
+                        .pathMatchers(HttpMethod.DELETE, "/api/restaurants/**").authenticated()
 
-                        // 其他请求先按你的需要决定
+                        // menuitems write protected
+                        .pathMatchers(HttpMethod.POST, "/api/menuitems/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/api/menuitems/**").authenticated()
+                        .pathMatchers(HttpMethod.DELETE, "/api/menuitems/**").authenticated()
+
+                        // orders all protected
+                        .pathMatchers("/api/orders/**").authenticated()
+
                         .anyExchange().permitAll()
                 )
 

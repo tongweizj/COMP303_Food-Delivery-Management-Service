@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.spring6.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring6.context.webflux.ReactiveDataDriverContextVariable;
+
+import com.spring.micro.entity.Restaurant;
+import com.spring.micro.service.RestaurantService;
 
 import reactor.core.publisher.Mono;
 
 @Controller
+@RequestMapping("/restaurants")
 public class RestaurantWebController {
 	@Autowired
     private  RestaurantService restaurantService;
@@ -23,18 +28,16 @@ public class RestaurantWebController {
     }
 
     // List all restaurants
-    @GetMapping("/restaurants")
+    @GetMapping
     public String listRestaurants(Model model) {
-        // Fetch all restaurants (Flux) and add them to the model
-    	// 包装 Flux，告诉 Thymeleaf 这是一个响应式流，逐条处理
         IReactiveDataDriverContextVariable reactiveData = 
             new ReactiveDataDriverContextVariable(restaurantService.getAll(), 1);
         model.addAttribute("restaurants", reactiveData);
-        return "restaurant/list"; // Maps to templates/restaurant/list.html
+        return "restaurant/list"; 
     }
     
     // Show form to create a new restaurant
-    @GetMapping("/restaurant/create")
+    @GetMapping("/create")
     public String createRestaurantForm(Model model) {
         // Pass an empty Restaurant object so the Thymeleaf form has something to bind to
         model.addAttribute("restaurant", new Restaurant());
@@ -42,7 +45,7 @@ public class RestaurantWebController {
     }
     
     // Show form to edit an existing restaurant
-    @GetMapping("/restaurant/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editRestaurantForm(@PathVariable String id, Model model) {
         // Fetch the specific restaurant (Mono) and add it to the model
         model.addAttribute("restaurant", restaurantService.getById(id));
@@ -50,7 +53,7 @@ public class RestaurantWebController {
     }
     
     // Show details of a single restaurant
-    @GetMapping("/restaurant/{id}")
+    @GetMapping("/{id}")
     public String detailRestaurant(@PathVariable String id, Model model) {
         // Fetch the specific restaurant (Mono) and add it to the model
         model.addAttribute("restaurant", restaurantService.getById(id));
@@ -61,7 +64,7 @@ public class RestaurantWebController {
      * @param restaurant 自动从表单绑定的对象
      * @return 这里的返回值必须是 Mono<String> 用于 WebFlux 环境下的视图跳转
      */
-    @PostMapping("/restaurant/save")
+    @PostMapping("/save")
     public Mono<String> saveRestaurant(@ModelAttribute("restaurant") Restaurant restaurant) {
     	// 关键修正：如果 ID 是空字符串，强制设为 null
         if (restaurant.getRestaurantId() != null && restaurant.getRestaurantId().isEmpty()) {

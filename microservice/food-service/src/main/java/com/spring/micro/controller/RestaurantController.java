@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.controller;
 
 /* Author: Wei Tong 301034450
  * COMP 303 - Enterprise App Development
@@ -16,10 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.micro.dto.RestaurantResponse;
+import com.spring.micro.entity.MenuItem;
+import com.spring.micro.entity.Restaurant;
+import com.spring.micro.service.MenuItemService;
+import com.spring.micro.service.RestaurantService;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/api/restaurants")
 public class RestaurantController {
 
 	private final RestaurantService restaurantService;
@@ -31,29 +38,29 @@ public class RestaurantController {
 	}
 
 	// Retrieve all restaurants
-	@GetMapping("/api/restaurants")
+	@GetMapping
 	public Flux<Restaurant> getAll() {
 		return restaurantService.getAll();
 	}
 
 	// Retrieve a single restaurant by its ID
-	@GetMapping("/api/restaurant/{id}")
-	public Mono<RestaurantDetail> getById(@PathVariable String id) {
+	@GetMapping("/{id}")
+	public Mono<RestaurantResponse> getById(@PathVariable String id) {
 		Mono<Restaurant> restaurantMono = restaurantService.getById(id);
 		Mono<List<MenuItem>> menuItemsMono = menuItemService.getByRestaurantId(id).collectList();
 		
 		return Mono.zip(restaurantMono, menuItemsMono)
-	            .map(tuple -> new RestaurantDetail(tuple.getT1(), tuple.getT2()));
+	            .map(tuple -> new RestaurantResponse(tuple.getT1(), tuple.getT2()));
 	}
 
 	// Create a new restaurant
-	@PostMapping("/api/restaurants")
+	@PostMapping
 	public Mono<Restaurant> create(@RequestBody Restaurant restaurant) {
 		return restaurantService.create(restaurant);
 	}
 
 	// Update an existing restaurant by its ID
-	@PutMapping("/api/restaurants/{id}")
+	@PutMapping("/{id}")
 	public Mono<Restaurant> updateById(@PathVariable String id, @RequestBody Restaurant restaurant) {
 		System.out.println("Updating restaurant: " + id);
 		return restaurantService.update(id, restaurant);
@@ -62,7 +69,7 @@ public class RestaurantController {
 	// Delete a restaurant by its ID
 	// Note: In WebFlux, void methods must return Mono<Void> to properly signal
 	// completion
-	@DeleteMapping("/api/restaurants/{id}")
+	@DeleteMapping("/{id}")
 	public Mono<Void> delete(@PathVariable String id) {
 		System.out.println("Deleting restaurant: " + id);
 		return restaurantService.delete(id);

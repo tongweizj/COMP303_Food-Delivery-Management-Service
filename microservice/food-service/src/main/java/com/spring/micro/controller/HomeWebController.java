@@ -1,4 +1,4 @@
-package com.spring.micro;
+package com.spring.micro.controller;
 
 import org.springframework.stereotype.Controller;
 

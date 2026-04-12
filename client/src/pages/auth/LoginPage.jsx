@@ -1,22 +1,22 @@
 // LoginPage.jsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import authService from '../../services/authService';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import authService from "../../services/authService";
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     // Check for a success message from signup redirect
     const params = new URLSearchParams(location.search);
-    if (params.get('signup') === 'success') {
-      setSuccessMessage('Signup successful! Please log in.');
+    if (params.get("signup") === "success") {
+      setSuccessMessage("Signup successful! Please log in.");
     }
   }, [location]);
 
@@ -24,54 +24,69 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccessMessage(''); // Clear success message on new attempt
+    setSuccessMessage(""); // Clear success message on new attempt
 
     try {
       const data = await authService.login({
-        username: username,
+        email: email,
         password,
       });
 
-      const token = data.token; 
+      const token = data.token;
       if (token) {
-        localStorage.setItem('authToken', token);
+        localStorage.setItem("authToken", token);
         // Redirect to a protected page or home, and refresh to update app state
-        navigate('/profile'); 
+        navigate("/profile");
         window.location.reload(); // Force a refresh to update navbar, etc.
-        console.log('Login successful:', data);
+        console.log("Login successful:", data);
       } else {
-        setError('Login successful, but no token received.');
+        setError("Login successful, but no token received.");
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-      console.error('Login error:', err);
+      setError(
+        err.response?.data?.message ||
+          "Login failed. Please check your credentials.",
+      );
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
-      <div className="card p-4 shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
+    <div
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: "80vh" }}
+    >
+      <div
+        className="card p-4 shadow-sm"
+        style={{ width: "100%", maxWidth: "400px" }}
+      >
         <h2 className="text-center mb-4">Login</h2>
-        {successMessage && <div className="alert alert-success">{successMessage}</div>}
+        {successMessage && (
+          <div className="alert alert-success">{successMessage}</div>
+        )}
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="usernameOrEmail" className="form-label">Username or Email:</label>
+            <label htmlFor="emailOrEmail" className="form-label">
+              Username or Email:
+            </label>
             <input
               type="text"
-              id="usernameOrEmail"
-              name="usernameOrEmail"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="emailOrEmail"
+              name="emailOrEmail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="form-control"
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password:</label>
+            <label htmlFor="password" className="form-label">
+              Password:
+            </label>
             <input
               type="password"
               id="password"
@@ -82,13 +97,23 @@ function LoginPage() {
               className="form-control"
             />
           </div>
-          <button type="submit" disabled={loading} className="btn btn-primary w-100">
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary w-100"
+          >
             {loading ? (
               <>
-                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
                 <span> Logging In...</span>
               </>
-            ) : 'Login'}
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
         <p className="text-center mt-3">

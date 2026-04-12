@@ -1,5 +1,11 @@
-package com.spring.micro;
+package com.spring.micro.config;
 
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,12 +13,17 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-
+	@Value("${jwt.secret}")
+    private String jwtSecret;
 	// 1. 注意這裡回傳的型態與參數，全部換成 WebFlux 專用的 Web 版本！
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -22,17 +33,48 @@ public class SecurityConfig {
 
 				// 3. WebFlux 是用 authorizeExchange 而不是 authorizeHttpRequests
 				.authorizeExchange(
-						exchanges -> exchanges.pathMatchers("/api/auth/login", "/api/auth/signup").permitAll() // 開放登入
-																												// API
-								.pathMatchers(HttpMethod.OPTIONS).permitAll() // 開放跨域預檢
-								.anyExchange().authenticated() // 其他都要驗證
-				)
+						exchanges -> exchanges
+						// preflight
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
 
+                        // auth public
+                        .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                         // users protected
+                        .pathMatchers("/api/users/**").authenticated()
+                                                
+                        // restaurants write protected
+                        .pathMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/restaurants/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated()
+                        .pathMatchers(HttpMethod.DELETE, "/api/restaurants/**").authenticated()
+
+                        // menuitems write protected
+                        .pathMatchers(HttpMethod.GET, "/api/menuitems/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/menuitems/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/api/menuitems/**").authenticated()
+                        .pathMatchers(HttpMethod.DELETE, "/api/menuitems/**").authenticated()
+
+                        // orders all protected
+                        .pathMatchers("/api/orders/**").authenticated()
+
+                        .anyExchange().permitAll()
+				)
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtDecoder(jwtDecoder())))
 				// 4. 關閉預設的登入與 Basic 驗證
-				.httpBasic(basic -> basic.disable()).formLogin(form -> form.disable());
+				.httpBasic(basic -> basic.disable())
+				.formLogin(form -> form.disable());
 
 		return http.build();
 	}
+	  @Bean
+	    public ReactiveJwtDecoder jwtDecoder() {
+	        SecretKey key = new SecretKeySpec(
+	                jwtSecret.getBytes(StandardCharsets.UTF_8),
+	                "HmacSHA256"
+	        );
+	        return NimbusReactiveJwtDecoder.withSecretKey(key).build();
+	    }
+	  
 
 	// 新增這個 Bean，讓 Spring 幫我們管理密碼加密器
 	@Bean
