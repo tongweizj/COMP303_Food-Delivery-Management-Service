@@ -4,7 +4,7 @@ Refactored by Gemini to use services and Bootstrap.
  */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import adminRestaurantService from '../../services/adminRestaurantService';
+import adminRestaurantService from '../../../services/adminRestaurantService';
 
 export default function AdminRestaurantPage() {
   const [restaurants, setRestaurants] = useState([]);

@@ -3,7 +3,7 @@ Author: Xuan Tri Nguyen - 301388576
 Refactored by Gemini to use services and Bootstrap.
  */
 import { useState, useEffect } from 'react';
-import adminOrderService from '../../services/adminOrderService';
+import adminOrderService from '../../../services/adminOrderService';
 
 export default function AdminOrderPage() {
   const [orders, setOrders] = useState([]);

@@ -1,7 +1,7 @@
 // LoginPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import authService from '../services/authService';
+import authService from '../../services/authService';
 
 function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');

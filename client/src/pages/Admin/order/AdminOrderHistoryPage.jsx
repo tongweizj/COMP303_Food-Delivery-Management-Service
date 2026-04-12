@@ -1,6 +1,6 @@
 // AdminOrderHistoryPage.jsx
 import React, { useState, useEffect } from 'react';
-import adminOrderService from '../../services/adminOrderService';
+import adminOrderService from '../../../services/adminOrderService';
 
 function AdminOrderHistoryPage() {
   const [orders, setOrders] = useState([]);
