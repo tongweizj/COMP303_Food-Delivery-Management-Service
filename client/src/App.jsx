@@ -1,30 +1,17 @@
 // App.jsx
 import React, { useState } from "react";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// Import page components
-import BlankPage from "./pages/BlankPage";
-
-import LoginPage from "./pages/auth/LoginPage";
-import SignupPage from "./pages/auth/SignupPage";
-
-import HomePage from "./pages/user/HomePage";
-import RestaurantDetailsPage from "./pages/user/RestaurantDetailsPage";
-import OrderCartPage from "./pages/user/OrderCartPage";
-import UserProfilePage from "./pages/user/UserProfilePage";
-
-import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
-import AdminRestaurantListPage from "./pages/Admin/restaurant/AdminRestaurantListPage";
-import AdminRestaurantFormPage from "./pages/Admin/restaurant/AdminRestaurantFormPage";
-import AdminFoodFormPage from "./pages/Admin/food/AdminFoodFormPage";
-import AdminOrderHistoryPage from "./pages/Admin/order/AdminOrderHistoryPage";
+import MainFooter from "./components/layout/MainFooter";
+import MainNavbar from "./components/layout/MainNavbar";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
-  // Use lazy initialization to synchronously check auth state and prevent UI flicker
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem("authToken");
     return !!token;
   });
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -32,131 +19,15 @@ function App() {
     setIsAuthenticated(false);
     navigate("/login");
   };
-
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-      <header>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-          <div className="container">
-            <Link className="navbar-brand" to="/">
-              Food Delivery
-            </Link>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    Home
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/cart">
-                    Cart
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/admin">
-                    Admin
-                  </Link>
-                </li>
-              </ul>
-              <ul className="navbar-nav">
-                {isAuthenticated ? (
-                  <li className="nav-item dropdown">
-                    <a
-                      className="nav-link dropdown-toggle"
-                      href="#"
-                      id="navbarDropdown"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Profile
-                    </a>
-                    <ul
-                      className="dropdown-menu dropdown-menu-end"
-                      aria-labelledby="navbarDropdown"
-                    >
-                      <li>
-                        <Link className="dropdown-item" to="/profile">
-                          My Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </li>
-                ) : (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/login">
-                      Login
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <MainNavbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
 
       <main className="flex-grow-1">
-        <Routes>
-          {/* Frontend Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
-          <Route path="/cart" element={<OrderCartPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
-
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route
-            path="/admin/restaurants"
-            element={<AdminRestaurantListPage />}
-          />
-          <Route
-            path="/admin/restaurants/new"
-            element={<AdminRestaurantFormPage />}
-          />
-          <Route
-            path="/admin/restaurants/edit/:id"
-            element={<AdminRestaurantFormPage />}
-          />
-          <Route path="/admin/food/new" element={<AdminFoodFormPage />} />
-          <Route path="/admin/food/edit/:id" element={<AdminFoodFormPage />} />
-          <Route path="/admin/orders" element={<AdminOrderHistoryPage />} />
-
-          {/* Blank page for testing routing */}
-          <Route path="/blank" element={<BlankPage />} />
-        </Routes>
+        <AppRouter />
       </main>
 
-      <footer className="bg-dark text-white text-center p-3 mt-auto">
-        <div className="container">
-          &copy; {new Date().getFullYear()} Food Delivery Service. All Rights
-          Reserved.
-        </div>
-      </footer>
+      <MainFooter />
     </div>
   );
 }
