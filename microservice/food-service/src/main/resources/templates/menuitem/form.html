@@ -44,6 +44,12 @@
                         </select>
                     </div>
 
+                    <div class="col-md-12">
+                        <label for="imageUrl" class="form-label">Cover Image URL</label>
+                        <input type="url" class="form-control" th:field="*{imageUrl}" 
+                               placeholder="e.g. https://example.com/menu-item.jpg" />
+                    </div>
+
                     <div class="col-md-4">
                         <label for="price" class="form-label">Price</label>
                         <div class="input-group">
@@ -55,7 +61,7 @@
 
                     <div class="col-md-4">
                         <label for="restId" class="form-label">Restaurant ID</label>
-                        <input type="number" class="form-control" th:field="*{restId}" 
+                        <input type="text" class="form-control" th:field="*{restId}" 
                                placeholder="Enter numeric Restaurant ID" required />
                     </div>
 

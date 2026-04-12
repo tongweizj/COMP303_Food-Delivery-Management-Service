@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
 <section>
     <div class="mb-4">
         <nav aria-label="breadcrumb">
@@ -50,6 +49,12 @@
                         <label for="city" class="form-label">City</label>
                         <input type="text" class="form-control" th:field="*{city}" 
                                placeholder="e.g. Toronto" required />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="coverImageUrl" class="form-label">Cover Image URL</label>
+                        <input type="url" class="form-control" th:field="*{coverImageUrl}" 
+                               placeholder="e.g. https://example.com/restaurant.jpg" />
                     </div>
 
                     <div class="col-md-3">

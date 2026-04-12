@@ -21,8 +21,10 @@ public class MenuItem {
     private String menuItemId;    // 建议使用包装类 Long
     
     private String itemName;
-    
-    private String category;
+    private String imageUrl;
+
+
+	private String category;
     
     private double price;       // 简单作业可用 double，专业项目建议 BigDecimal
     
@@ -77,6 +79,13 @@ public class MenuItem {
 	public void setRestId(String restId) {
 		this.restId = restId;
 	}
+	
+    public String getImageUrl() {
+		return imageUrl;
+	}
 
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
     
 }
