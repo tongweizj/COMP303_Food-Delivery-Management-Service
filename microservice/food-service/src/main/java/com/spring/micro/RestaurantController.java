@@ -23,9 +23,11 @@ import reactor.core.publisher.Mono;
 public class RestaurantController {
 
 	private final RestaurantService restaurantService;
+	private final MenuItemService menuItemService;
 
-	public RestaurantController(RestaurantService restaurantService) {
+	public RestaurantController(RestaurantService restaurantService,MenuItemService menuItemService) {
 		this.restaurantService = restaurantService;
+		this.menuItemService = menuItemService;
 	}
 
 	// Retrieve all restaurants
@@ -35,9 +37,13 @@ public class RestaurantController {
 	}
 
 	// Retrieve a single restaurant by its ID
-	@GetMapping("/api/restaurants/{id}")
-	public Mono<Restaurant> getById(@PathVariable String id) {
-		return restaurantService.getById(id);
+	@GetMapping("/api/restaurant/{id}")
+	public Mono<RestaurantDetail> getById(@PathVariable String id) {
+		Mono<Restaurant> restaurantMono = restaurantService.getById(id);
+		Mono<List<MenuItem>> menuItemsMono = menuItemService.getByRestaurantId(id).collectList();
+		
+		return Mono.zip(restaurantMono, menuItemsMono)
+	            .map(tuple -> new RestaurantDetail(tuple.getT1(), tuple.getT2()));
 	}
 
 	// Create a new restaurant

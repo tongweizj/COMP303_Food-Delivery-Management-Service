@@ -14,32 +14,31 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/customer")
 public class CustomerRestController {
 	@Autowired
     private CustomerService customerService;
 
-    @GetMapping
+    @GetMapping("/api/customers")
     public Flux<Customer> getAllUsers() {
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/customer/{id}")
     public  Mono<Customer> getUserById(@PathVariable String id) {
         return customerService.getCustomerById(id);
     }
 
-    @PostMapping
+    @PostMapping("/api/auth/signup")
     public  Mono<Customer> createUser(@RequestBody Customer customer) {
         return customerService.save(customer);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/customer/{id}")
     public  Mono<Customer> updateUser(@PathVariable String id, @RequestBody Customer customer) {
         return customerService.updateCustomer(id, customer);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/customer/{id}")
     public String deleteCustomer(@PathVariable String id) {
     	customerService.deleteCustomer(id);
         return "User deleted successfully with id: " + id;

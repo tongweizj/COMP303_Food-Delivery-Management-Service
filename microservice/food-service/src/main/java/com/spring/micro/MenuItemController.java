@@ -37,7 +37,11 @@ public class MenuItemController {
 	public Mono<MenuItem> getById(@PathVariable String id) {
 		return menuItemService.getById(id);
 	}
-
+	// 按餐厅ID查菜单
+	@GetMapping("/api/menuitems/restaurant/{restId}")
+	public Flux<MenuItem> getByRestaurantId(@PathVariable String restId) {
+	    return menuItemService.getByRestaurantId(restId);
+	}
 	// 增
 	@PostMapping("/api/menuitem")
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {

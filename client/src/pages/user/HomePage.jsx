@@ -1,7 +1,7 @@
 // HomePage.jsx
-import React, { useState, useEffect } from 'react';
-import restaurantService from '../../services/restaurantService';
-import RestaurantCard from '../../components/common/RestaurantCard'; // Assuming RestaurantCard is in src/components
+import React, { useState, useEffect } from "react";
+import restaurantService from "../../services/restaurantService";
+import RestaurantCard from "../../components/common/RestaurantCard"; // Assuming RestaurantCard is in src/components
 
 function HomePage() {
   const [restaurants, setRestaurants] = useState([]);
@@ -14,8 +14,8 @@ function HomePage() {
         const data = await restaurantService.getAllRestaurants();
         setRestaurants(Array.isArray(data) ? data : []);
       } catch (err) {
-        setError('Failed to load restaurant list. Please try again later.');
-        console.error('Error fetching restaurants:', err);
+        setError("Failed to load restaurant list. Please try again later.");
+        console.error("Error fetching restaurants:", err);
       } finally {
         setLoading(false);
       }
@@ -47,14 +47,19 @@ function HomePage() {
       <h1 className="text-center my-4">Our Restaurants</h1>
       <div className="row g-4">
         {restaurants.length > 0 ? (
-          restaurants.map(restaurant => (
-            <div className="col-xl-3 col-lg-4 col-md-6" key={restaurant.id}>
+          restaurants.map((restaurant) => (
+            <div
+              className="col-xl-3 col-lg-4 col-md-6"
+              key={restaurant.restaurantId}
+            >
               <RestaurantCard restaurant={restaurant} />
             </div>
           ))
         ) : (
           <div className="col-12">
-            <p className="text-center text-muted">No restaurants available at the moment.</p>
+            <p className="text-center text-muted">
+              No restaurants available at the moment.
+            </p>
           </div>
         )}
       </div>

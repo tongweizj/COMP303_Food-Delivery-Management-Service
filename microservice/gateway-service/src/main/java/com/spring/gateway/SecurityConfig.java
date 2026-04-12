@@ -22,7 +22,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/restaurant/**").permitAll()
 
                         // 餐厅写操作需要登录
-                        .pathMatchers(HttpMethod.POST, "/api/restaurants/**").authenticated()
+                        .pathMatchers(HttpMethod.POST, "/api/restaurant/**").authenticated()
                         .pathMatchers(HttpMethod.PUT, "/api/restaurant/**").authenticated()
                         .pathMatchers(HttpMethod.DELETE, "/api/restaurant/**").authenticated()
 
