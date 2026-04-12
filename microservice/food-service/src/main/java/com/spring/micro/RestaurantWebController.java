@@ -26,7 +26,7 @@ public class RestaurantWebController {
     @GetMapping("/restaurants")
     public String listRestaurants(Model model) {
         // Fetch all restaurants (Flux) and add them to the model
-    	// 包装 Flux，告诉 Thymeleaf 这是一个响应式流，逐条处理
+    	// Wrap Flux, tell Thymeleaf this is a reactive stream, processing it item by item
         IReactiveDataDriverContextVariable reactiveData = 
             new ReactiveDataDriverContextVariable(restaurantService.getAll(), 1);
         model.addAttribute("restaurants", reactiveData);
@@ -57,24 +57,24 @@ public class RestaurantWebController {
         return "restaurant/detail"; // Maps to templates/restaurant/detail.html
     }
     /**
-     * 处理创建和更新的统一保存接口
-     * @param restaurant 自动从表单绑定的对象
-     * @return 这里的返回值必须是 Mono<String> 用于 WebFlux 环境下的视图跳转
+     * Unified save interface for handling creation and updates
+     * @param restaurant Object automatically bound from the form
+     * @return The return value here must be Mono<String> for view jumping in the WebFlux environment
      */
     @PostMapping("/restaurant/save")
     public Mono<String> saveRestaurant(@ModelAttribute("restaurant") Restaurant restaurant) {
-    	// 关键修正：如果 ID 是空字符串，强制设为 null
+    	// Key fix: If ID is an empty string, force it to null
         if (restaurant.getRestaurantId() != null && restaurant.getRestaurantId().isEmpty()) {
             restaurant.setRestaurantId(null);
         }
-        // 1. 调用响应式服务层保存数据
-        // 2. 使用 .then() 确保保存动作完成后再执行后续操作
-        // 3. 返回 "redirect:/restaurant/list" 告诉浏览器跳转
+        // 1. Call the reactive service layer to save data
+        // 2. Use .then() to ensure subsequent operations are executed after the save action is completed
+        // 3. Return "redirect:/restaurants" to tell the browser to redirect
         return restaurantService.save(restaurant)
         		.doOnNext(saved -> System.out.println("Saved with ID: " + saved.getRestaurantId()))
                 .then(Mono.just("redirect:/restaurants"))
                 .onErrorResume(e -> {
-                    // 如果发生错误，可以记录日志并跳转回表单页（可选）
+                    // If an error occurs, you can log it and redirect back to the form page (optional)
                     System.err.println("Save failed: " + e.getMessage());
                     return Mono.just("restaurant/form");
                 });

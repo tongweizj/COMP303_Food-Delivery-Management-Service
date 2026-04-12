@@ -19,7 +19,7 @@ public class CustomerWebController {
 	
 	@GetMapping("/customers")
 	public String customers(Model model) {
-		// 使用 ReactiveDataDriver 模式处理用户列表
+		// Use ReactiveDataDriver mode to process the user list
         IReactiveDataDriverContextVariable reactiveData = 
                 new ReactiveDataDriverContextVariable(customerService.getAllCustomers(), 1);
         model.addAttribute("customers", reactiveData);
@@ -51,7 +51,7 @@ public class CustomerWebController {
 	}
 	@PostMapping("/customer/save")
 	public Mono<String> saveCustomer(@ModelAttribute("customer") Customer customer) {
-	    // 强制处理：如果 ID 是空字符串（创建模式下 Thymeleaf 可能会传 ""），设为 null 以便 MongoDB 生成新 ID
+	    // Forced handling: if the ID is an empty string (Thymeleaf may pass "" in creation mode), set it to null so that MongoDB generates a new ID
 	    if (customer.getId() != null && customer.getId().isEmpty()) {
 	        customer.setId(null);
 	    }
@@ -62,7 +62,7 @@ public class CustomerWebController {
 	
 	@GetMapping("/customer/delete/{id}")
 	public Mono<String> deleteCustomer(@PathVariable String id) {
-	    // 调用 service 执行删除逻辑
+	    // Call service to execute delete logic
 	    return customerService.deleteCustomer(id)
 	            .doOnSuccess(v -> System.out.println("Customer deleted: " + id))
 	            .then(Mono.just("redirect:/customers"));
