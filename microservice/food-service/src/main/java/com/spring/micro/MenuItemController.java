@@ -26,32 +26,32 @@ public class MenuItemController {
 		this.menuItemService = menuItemService;
 	}
 
-	// 查所有
+	// Find all
 	@GetMapping("/api/menuitems")
 	public Flux<MenuItem> getAll() {
 		return menuItemService.getAll();
 	}
 
-	// 查单个
+	// Find one
 	@GetMapping("/api/menuitem/{id}")
 	public Mono<MenuItem> getById(@PathVariable String id) {
 		return menuItemService.getById(id);
 	}
 
-	// 增
+	// Add
 	@PostMapping("/api/menuitem")
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {
 		return menuItemService.save(m);
 	}
 
-	// 改
+	// Update
 	@PutMapping("/api/menuitem/{id}")
 	public Mono<MenuItem> updateById(@PathVariable String id, @RequestBody MenuItem m) {
 		System.out.println("Updating menuItem: " + id);
 		return menuItemService.update(id, m);
 	}
 
-	// 删
+	// Delete
 	@DeleteMapping("/api/menuitem/{id}")
 	public void delete(@PathVariable String id) {
 		System.out.println("Deleting menuItem: " + id);

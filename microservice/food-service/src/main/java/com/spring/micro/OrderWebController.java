@@ -72,13 +72,13 @@ public class OrderWebController {
     
     @PostMapping("/order/save")
     public Mono<String> saveOrder(@ModelAttribute("order") Order order) {
-        // 1. 如果是新订单，确保生成时间
+        // 1. If it's a new order, ensure the generation time
         if (order.getOrderId() == null || order.getOrderId().isEmpty()) {
-            order.setOrderId(null); // 触发 MongoDB 自动生成
+            order.setOrderId(null); // Trigger MongoDB auto-generation
             order.setOrderDate(LocalDateTime.now());
         }
 
-        // 2. 默认状态 (如果是新建)
+        // 2. Default status (if it's new)
         if (order.getOrderStatus() == null) {
             order.setOrderStatus("Placed");
         }

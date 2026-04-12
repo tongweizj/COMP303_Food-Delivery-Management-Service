@@ -17,20 +17,20 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-	// 1. 使用 @Value 讀取 application.properties 裡的 jwt.secret
+	// 1. Use @Value to read jwt.secret from application.properties
 	@Value("${jwt.secret}")
 	private String secret;
 
-	// 2. 使用 @Value 讀取過期時間
+	// 2. Use @Value to read the expiration time
 	@Value("${jwt.expiration}")
 	private long expirationTime;
 
 	private Key key;
 
-	// 3. @PostConstruct 確保這個方法會在 @Value 成功注入值之後才執行
+	// 3. @PostConstruct ensures that this method will only execute after @Value has successfully injected the value
 	@PostConstruct
 	public void init() {
-		// 在這裡把讀取到的字串密鑰，轉換成 JWT 演算法需要的 Key 物件
+		// Convert the read string secret key into the Key object needed for the JWT algorithm
 		this.key = Keys.hmacShaKeyFor(secret.getBytes());
 	}
 
@@ -38,11 +38,11 @@ public class JwtUtil {
 	 * Generate a new JWT token for the user.
 	 */
 	public String generateToken(String username, String role) {
-		return Jwts.builder().setSubject(username) // 把使用者的帳號放進 Token 的內容裡
+		return Jwts.builder().setSubject(username) // Put the user's account into the Token content
 				.claim("role", role)
-				.setIssuedAt(new Date(System.currentTimeMillis())) // 發放時間
-				.setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 過期時間
-				.signWith(key, SignatureAlgorithm.HS256) // 使用我們的密鑰加上數位簽章
+				.setIssuedAt(new Date(System.currentTimeMillis())) // Issue time
+				.setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // Expiration time
+				.signWith(key, SignatureAlgorithm.HS256) // Use our secret key plus a digital signature
 				.compact();
 	}
 
@@ -51,11 +51,11 @@ public class JwtUtil {
 	 */
 	public boolean validateToken(String token) {
 		try {
-			// 如果這行沒有拋出 Exception，就代表這張 Token 是我們發的，而且還沒過期
+			// If this line does not throw an Exception, it means that this Token was issued by us and has not expired yet
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
-			// Token 被竄改、或是已經過期了
+			// Token has been tampered with or has expired
 			return false;
 		}
 	}

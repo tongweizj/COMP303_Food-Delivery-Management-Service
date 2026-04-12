@@ -35,7 +35,7 @@ public class AuthController {
 			if ("admin".equals(loginRequest.getUsername()) && "password".equals(loginRequest.getPassword())) {
 				role = "ROLE_ADMIN";
 			} else if ("user".equals(loginRequest.getUsername()) && "password".equals(loginRequest.getPassword())) {
-				role = "ROLE_USER"; // 假設這是一般使用者的帳密
+				role = "ROLE_USER"; // Assume these are the credentials for a regular user
 			} else {
 				Map<String, String> errorResponse = new HashMap<>();
 				errorResponse.put("message", "Invalid username or password");
@@ -48,7 +48,7 @@ public class AuthController {
 			String realJwtToken = jwtUtil.generateToken(loginRequest.getUsername(), role);
 
 			Map<String, String> responseData = new HashMap<>();
-			responseData.put("token", realJwtToken); // 把真 Token 放進去
+			responseData.put("token", realJwtToken); // Put the real Token in
 			responseData.put("username", loginRequest.getUsername());
 			responseData.put("role", role);
 			responseData.put("message", "Login successful!");

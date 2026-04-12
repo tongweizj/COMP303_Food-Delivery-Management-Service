@@ -48,8 +48,8 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		<!-- 6. 数据验证 (Bean Validation) -->
-        <!-- 用于在实体类（如 Restaurant, User）上使用 @NotNull, @Size 等注解 [6, 7] -->
+		<!-- 6. Data Validation (Bean Validation) -->
+        <!-- Used to use @NotNull, @Size and other annotations on entity classes (such as Restaurant, User) [6, 7] -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -70,7 +70,7 @@
 			<optional>true</optional>
 		</dependency>
 		
-		<!-- 测试支持 -->
+		<!-- Test Support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator-test</artifactId>

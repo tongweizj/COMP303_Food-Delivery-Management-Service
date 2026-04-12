@@ -50,7 +50,7 @@ public class RestaurantService {
 		}).switchIfEmpty(Mono.error(new RuntimeException("Restaurant not found: " + id)));
 	}
 	public Mono<Restaurant> save(Restaurant restaurant) {
-        // ReactiveMongoRepository 的 save 方法自带“存在即更新，不存在即插入”逻辑
+        // The save method of ReactiveMongoRepository has "update if exists, insert if not exists" logic
         return restaurantRepository.save(restaurant);
     }
 	// Delete a restaurant by ID

@@ -12,9 +12,9 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class EmployeeServiceController {
 
-	@GetMapping("/employee") // 2. 映射请求路径
+	@GetMapping("/employee") // 2. Map request path
 	public String getEmployee() {
-		String baseUrl = "http://localhost:8084/real-data-source"; // 注意：不能自己调自己导致死循环
+		String baseUrl = "http://localhost:8084/real-data-source"; // Note: Cannot call itself, causing an infinite loop
 		RestTemplate restTemplate = new RestTemplate();
 
 		try {
@@ -22,7 +22,7 @@ public class EmployeeServiceController {
 					String.class);
 			return response.getBody();
 		} catch (Exception ex) {
-			return "Error: " + ex.getMessage(); // 3. 发生错误时安全返回
+			return "Error: " + ex.getMessage(); // 3. Return safely when an error occurs
 		}
 	}
 
