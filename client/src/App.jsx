@@ -3,18 +3,21 @@ import React, { useState } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 
 // Import page components
-import HomePage from "./pages/HomePage";
-import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
-import OrderCartPage from "./pages/OrderCartPage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import UserProfilePage from "./pages/UserProfilePage";
-import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
-import AdminRestaurantListPage from "./pages/Admin/AdminRestaurantListPage";
-import AdminRestaurantFormPage from "./pages/Admin/AdminRestaurantFormPage";
-import AdminFoodFormPage from "./pages/Admin/AdminFoodFormPage";
-import AdminOrderHistoryPage from "./pages/Admin/AdminOrderHistoryPage";
 import BlankPage from "./pages/BlankPage";
+
+import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignupPage";
+
+import HomePage from "./pages/user/HomePage";
+import RestaurantDetailsPage from "./pages/user/RestaurantDetailsPage";
+import OrderCartPage from "./pages/user/OrderCartPage";
+import UserProfilePage from "./pages/user/UserProfilePage";
+
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
+import AdminRestaurantListPage from "./pages/Admin/restaurant/AdminRestaurantListPage";
+import AdminRestaurantFormPage from "./pages/Admin/restaurant/AdminRestaurantFormPage";
+import AdminFoodFormPage from "./pages/Admin/food/AdminFoodFormPage";
+import AdminOrderHistoryPage from "./pages/Admin/order/AdminOrderHistoryPage";
 
 function App() {
   // Use lazy initialization to synchronously check auth state and prevent UI flicker
