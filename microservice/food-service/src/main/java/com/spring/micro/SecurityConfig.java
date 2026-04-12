@@ -21,7 +21,8 @@ public class SecurityConfig {
 				// 3. WebFlux 是用 authorizeExchange 而不是 authorizeHttpRequests
 				.authorizeExchange(exchanges -> exchanges.pathMatchers("/api/auth/login").permitAll() // 開放登入 API
 						.pathMatchers(HttpMethod.OPTIONS).permitAll() // 開放跨域預檢
-						.anyExchange().authenticated() // 其他都要驗證
+						.anyExchange().permitAll()
+//						.anyExchange().authenticated() // 其他都要驗證,因为这一条把所有的其他业务url全部蓝调了，暂时改为上面那条，
 				)
 
 				// 4. 關閉預設的登入與 Basic 驗證
