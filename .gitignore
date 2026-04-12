@@ -174,3 +174,4 @@ vite.config.ts.timestamp-*
 # /docs
 # GEMINI.md
 # .geminiignore
+client/package-lock.json

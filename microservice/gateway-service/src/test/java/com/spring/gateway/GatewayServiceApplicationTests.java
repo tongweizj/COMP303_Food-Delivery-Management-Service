@@ -1,10 +1,10 @@
-package com.spring.micro;
+package com.spring.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FoodDeliveryMicroSerApplicationTests {
+class GatewayServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
