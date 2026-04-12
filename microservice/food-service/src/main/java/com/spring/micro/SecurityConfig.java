@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
@@ -19,14 +21,22 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable())
 
 				// 3. WebFlux 是用 authorizeExchange 而不是 authorizeHttpRequests
-				.authorizeExchange(exchanges -> exchanges.pathMatchers("/api/auth/login").permitAll() // 開放登入 API
-						.pathMatchers(HttpMethod.OPTIONS).permitAll() // 開放跨域預檢
-						.anyExchange().authenticated() // 其他都要驗證
+				.authorizeExchange(
+						exchanges -> exchanges.pathMatchers("/api/auth/login", "/api/auth/signup").permitAll() // 開放登入
+																												// API
+								.pathMatchers(HttpMethod.OPTIONS).permitAll() // 開放跨域預檢
+								.anyExchange().authenticated() // 其他都要驗證
 				)
 
 				// 4. 關閉預設的登入與 Basic 驗證
 				.httpBasic(basic -> basic.disable()).formLogin(form -> form.disable());
 
 		return http.build();
+	}
+
+	// 新增這個 Bean，讓 Spring 幫我們管理密碼加密器
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }

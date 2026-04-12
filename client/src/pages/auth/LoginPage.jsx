@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import authService from '../../services/authService';
 
 function LoginPage() {
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ function LoginPage() {
 
     try {
       const data = await authService.login({
-        usernameOrEmail,
+        username: username,
         password,
       });
 
@@ -64,8 +64,8 @@ function LoginPage() {
               type="text"
               id="usernameOrEmail"
               name="usernameOrEmail"
-              value={usernameOrEmail}
-              onChange={(e) => setUsernameOrEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="form-control"
             />
