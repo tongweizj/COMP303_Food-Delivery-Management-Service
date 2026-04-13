@@ -133,6 +133,12 @@ function AdminRestaurantListPage() {
                   </td>
                   <td>
                     <Link
+                      to={`/admin/restaurants/${restaurant.restaurantId}`}
+                      className="btn btn-success btn-sm me-2"
+                    >
+                      View
+                    </Link>
+                    <Link
                       to={`/admin/restaurants/edit/${restaurant.restaurantId}`}
                       className="btn btn-success btn-sm me-2"
                     >

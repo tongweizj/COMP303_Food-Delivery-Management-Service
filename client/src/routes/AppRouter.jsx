@@ -16,39 +16,74 @@ import UserProfilePage from "../pages/user/UserProfilePage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import AdminRestaurantListPage from "../pages/admin/restaurant/AdminRestaurantListPage";
 import AdminRestaurantFormPage from "../pages/admin/restaurant/AdminRestaurantFormPage";
-import AdminFoodFormPage from "../pages/admin/food/AdminFoodFormPage";
-import AdminOrderHistoryPage from "../pages/admin/order/AdminOrderHistoryPage";
+import AdminRestaurantPage from "../pages/admin/restaurant/AdminRestaurantPage";
 
-function AppRouter() {
+import AdminFoodFormPage from "../pages/admin/food/AdminFoodFormPage";
+import AdminMenuItemDetailsPage from "../pages/admin/food/AdminMenuItemDetailsPage.jsx";
+import AdminMenuItemListPage from "../pages/admin/food/AdminMenuItemListPage.jsx";
+
+import AdminOrderListPage from "../pages/admin/order/AdminOrderListPage";
+import AdminOrderHistoryPage from "../pages/admin/order/AdminOrderHistoryPage";
+import AdminOrderDetailsPage from "../pages/admin/order/AdminOrderDetailsPage.jsx";
+
+import { MainLayout, AdminLayout } from "../components/layout/layout.jsx";
+function AppRouter({ isAuthenticated, onLogout }) {
   return (
     <Routes>
-      {/* User Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
-      <Route path="/cart" element={<OrderCartPage />} />
-      <Route path="/profile" element={<UserProfilePage />} />
-
-      {/* Auth Routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-
-      {/* Admin Routes */}
-      <Route path="/admin" element={<AdminDashboardPage />} />
-      <Route path="/admin/restaurants" element={<AdminRestaurantListPage />} />
       <Route
-        path="/admin/restaurants/new"
-        element={<AdminRestaurantFormPage />}
-      />
-      <Route
-        path="/admin/restaurants/edit/:id"
-        element={<AdminRestaurantFormPage />}
-      />
-      <Route path="/admin/food/new" element={<AdminFoodFormPage />} />
-      <Route path="/admin/food/edit/:id" element={<AdminFoodFormPage />} />
-      <Route path="/admin/orders" element={<AdminOrderHistoryPage />} />
+        element={
+          <MainLayout isAuthenticated={isAuthenticated} onLogout={onLogout} />
+        }
+      >
+        {/* User Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
+        <Route path="/cart" element={<OrderCartPage />} />
+        <Route path="/profile" element={<UserProfilePage />} />
+        {/* Auth Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        {/* Testing Route */}
+        <Route path="/blank" element={<BlankPage />} />
+      </Route>
 
-      {/* Testing Route */}
-      <Route path="/blank" element={<BlankPage />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminLayout isAuthenticated={isAuthenticated} onLogout={onLogout} />
+        }
+      >
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminDashboardPage />} />
+        <Route
+          path="/admin/restaurants"
+          element={<AdminRestaurantListPage />}
+        />
+        <Route
+          path="/admin/restaurants/new"
+          element={<AdminRestaurantFormPage />}
+        />
+        <Route
+          path="/admin/restaurants/edit/:id"
+          element={<AdminRestaurantFormPage />}
+        />
+        <Route
+          path="/admin/restaurants/:id"
+          element={<AdminRestaurantPage />}
+        />
+        <Route path="/admin/menuitems" element={<AdminMenuItemListPage />} />
+        <Route path="/admin/menuitems/new" element={<AdminFoodFormPage />} />
+        <Route
+          path="/admin/menuitems/edit/:id"
+          element={<AdminFoodFormPage />}
+        />
+        <Route
+          path="/admin/menuitems/:id"
+          element={<AdminMenuItemDetailsPage />}
+        />
+        <Route path="/admin/orders" element={<AdminOrderListPage />} />
+        <Route path="/admin/orders/:id" element={<AdminOrderDetailsPage />} />
+      </Route>
     </Routes>
   );
 }

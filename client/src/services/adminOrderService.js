@@ -8,6 +8,15 @@ const getAuthHeaders = () => {
 };
 
 const adminOrderService = {
+  async getOrder(id) {
+    console.log("adminOrderService:", id);
+    const response = await apiClient.get(`/orders/${id}`, {
+      headers: getAuthHeaders(),
+    });
+    console.log("adminOrderService:", response.data);
+    return response.data;
+  },
+
   async getAllOrders() {
     const response = await apiClient.get("/orders", {
       headers: getAuthHeaders(),
