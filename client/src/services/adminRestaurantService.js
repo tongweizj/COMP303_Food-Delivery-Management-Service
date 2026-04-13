@@ -3,6 +3,7 @@ import apiClient from "./apiClient";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("authToken");
+  console.log("token:", token);
   if (!token) return {};
   return { Authorization: `Bearer ${token}` };
 };
