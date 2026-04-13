@@ -20,28 +20,28 @@ public class SecurityConfig {
                 		// preflight
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
 
-                        // auth public
-                        .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-
-                        // public read
-                        .pathMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/menuitems/**").permitAll()
-
-                        // users protected
-                        .pathMatchers("/api/users/**").authenticated()
-
-                        // restaurants write protected
-                        .pathMatchers(HttpMethod.POST, "/api/restaurants/**").authenticated()
-                        .pathMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated()
-                        .pathMatchers(HttpMethod.DELETE, "/api/restaurants/**").authenticated()
-
-                        // menuitems write protected
-                        .pathMatchers(HttpMethod.POST, "/api/menuitems/**").authenticated()
-                        .pathMatchers(HttpMethod.PUT, "/api/menuitems/**").authenticated()
-                        .pathMatchers(HttpMethod.DELETE, "/api/menuitems/**").authenticated()
-
-                        // orders all protected
-                        .pathMatchers("/api/orders/**").authenticated()
+//                        // auth public
+//                        .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+//
+//                        // public read
+//                        .pathMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+//                        .pathMatchers(HttpMethod.GET, "/api/menuitems/**").permitAll()
+//
+//                        // users protected
+//                        .pathMatchers("/api/users/**").authenticated()
+//
+//                        // restaurants write protected
+//                        .pathMatchers(HttpMethod.POST, "/api/restaurants/**").authenticated()
+//                        .pathMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated()
+//                        .pathMatchers(HttpMethod.DELETE, "/api/restaurants/**").authenticated()
+//
+//                        // menuitems write protected
+//                        .pathMatchers(HttpMethod.POST, "/api/menuitems/**").authenticated()
+//                        .pathMatchers(HttpMethod.PUT, "/api/menuitems/**").authenticated()
+//                        .pathMatchers(HttpMethod.DELETE, "/api/menuitems/**").authenticated()
+//
+//                        // orders all protected
+//                        .pathMatchers("/api/orders/**").authenticated()
 
                         .anyExchange().permitAll()
                 )

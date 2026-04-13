@@ -14,16 +14,24 @@ const getAuthHeaders = () => {
 
 const userService = {
   async getUserProfile() {
-    const response = await apiClient.get("/user/profile", {
+    const response = await apiClient.get("/users/profile", {
       headers: getAuthHeaders(),
     });
     return response.data;
   },
 
   async updateUserProfile(profileData) {
-    const response = await apiClient.put("/user/profile", profileData, {
+    const response = await apiClient.put("/users/profile", profileData, {
       headers: getAuthHeaders(),
     });
+    return response.data;
+  },
+
+  async getMe() {
+    const response = await apiClient.get("/me", {
+      headers: getAuthHeaders(),
+    });
+    console.log("getMe:", response.data);
     return response.data;
   },
 };

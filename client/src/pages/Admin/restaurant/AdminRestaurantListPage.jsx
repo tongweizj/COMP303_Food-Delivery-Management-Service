@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import adminRestaurantService from "../../../services/adminRestaurantService";
+import { useAdmin } from "../../../hooks/useAdmin";
 
 function AdminRestaurantListPage() {
+  const { user } = useAdmin();
+
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +23,10 @@ function AdminRestaurantListPage() {
       const data = await adminRestaurantService.getAllRestaurants();
       setRestaurants(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load restaurants. Ensure you are logged in as an admin.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to load restaurants. Ensure you are logged in as an admin.",
+      );
       console.error("Error fetching admin restaurants:", err);
     } finally {
       setLoading(false);
@@ -154,4 +160,3 @@ function AdminRestaurantListPage() {
 }
 
 export default AdminRestaurantListPage;
-
