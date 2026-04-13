@@ -56,7 +56,7 @@ public class UserService {
                     newUser.setEmail(user.getEmail());
                     newUser.setName(user.getName());
                     newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-                    newUser.setRole("ROLE_USER");
+                    newUser.setRole("USER");
 
                     return userRepository.save(newUser);
                 }));
@@ -102,6 +102,8 @@ public class UserService {
                 .switchIfEmpty(Mono.error(new ResponseStatusException(
                         HttpStatus.UNAUTHORIZED, "Invalid username or password")));
     }
+    
+    
     public Mono<User> updateUser(String authHeader, User user) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return Mono.error(new RuntimeException("Missing or invalid Authorization header"));

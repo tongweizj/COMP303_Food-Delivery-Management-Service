@@ -1,6 +1,11 @@
 package com.spring.micro.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,10 +70,28 @@ public class UserController {
     
     @GetMapping("/api/users/profile")
     public Mono<User> getProfile(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
+    	System.out.println("==== AUTH HEADER START ====");
+    	System.out.println(authentication);
         String email = authentication.getToken().getSubject();
+        
         return userService.getUserProfile(email);
     }
-    
+    @GetMapping("/api/me")
+    public Map<String, Object> getCurrentUser(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
+    	// 1. 获取所有的 Claims
+        Map<String, Object> attributes = authentication.getTokenAttributes();
+        
+        // 2. 提取信息
+        String email = authentication.getToken().getSubject(); // 即你存入的 username
+        String role =  authentication.getToken().getClaimAsString("role");// 对应你生成 token 时的 .claim("role", role)
+        System.out.println(role); 
+
+        // 3. 组装返回结果 (类似 Express 的响应结构)
+        Map<String, Object> response = new HashMap<>();
+        response.put("email", email);
+        response.put("role", role);
+        return response;
+    }
     @PutMapping("/api/users/profile")
     public Mono<User> getUserProfile(@RequestHeader("Authorization") String authHeader, @RequestBody User user) {
     	System.out.println("==== AUTH HEADER START ====");

@@ -38,6 +38,7 @@ public class JwtUtil {
 	 * Generate a new JWT token for the user.
 	 */
 	public String generateToken(String username, String role) {
+		
 		return Jwts.builder().setSubject(username) // 把使用者的帳號放進 Token 的內容裡
 				.claim("role", role).setIssuedAt(new Date(System.currentTimeMillis())) // 發放時間
 				.setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 過期時間
@@ -60,10 +61,24 @@ public class JwtUtil {
 	}
 
 	/**
-	 * Extract the username from the token.
+	 * Extract the username and role from the token.
 	 */
+	// 1. 统一的解析方法
+	private Claims extractAllClaims(String token) {
+	    return Jwts.parserBuilder()
+	            .setSigningKey(key)
+	            .build()
+	            .parseClaimsJws(token)
+	            .getBody();
+	}
+
+	// 2. 提取 Username
 	public String extractUsername(String token) {
-		Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-		return claims.getSubject();
+	    return extractAllClaims(token).getSubject();
+	}
+
+	// 3. 提取 Role
+	public String extractRole(String token) {
+	    return extractAllClaims(token).get("role", String.class);
 	}
 }

@@ -13,11 +13,11 @@ import RestaurantDetailsPage from "../pages/user/RestaurantDetailsPage";
 import OrderCartPage from "../pages/user/OrderCartPage";
 import UserProfilePage from "../pages/user/UserProfilePage";
 
-import AdminDashboardPage from "../pages/Admin/AdminDashboardPage";
-import AdminRestaurantListPage from "../pages/Admin/restaurant/AdminRestaurantListPage";
-import AdminRestaurantFormPage from "../pages/Admin/restaurant/AdminRestaurantFormPage";
-import AdminFoodFormPage from "../pages/Admin/food/AdminFoodFormPage";
-import AdminOrderHistoryPage from "../pages/Admin/order/AdminOrderHistoryPage";
+import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
+import AdminRestaurantListPage from "../pages/admin/restaurant/AdminRestaurantListPage";
+import AdminRestaurantFormPage from "../pages/admin/restaurant/AdminRestaurantFormPage";
+import AdminFoodFormPage from "../pages/admin/food/AdminFoodFormPage";
+import AdminOrderHistoryPage from "../pages/admin/order/AdminOrderHistoryPage";
 
 function AppRouter() {
   return (
