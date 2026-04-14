@@ -51,12 +51,12 @@ function OrderSuccessPage() {
               >
                 Order More
               </button>
-              <button
+              {/* <button
                 className="btn btn-outline-secondary"
                 onClick={() => navigate("/orders")} // Assuming you will write an order history page later
               >
                 View Order History
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
