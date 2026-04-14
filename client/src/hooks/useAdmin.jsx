@@ -13,7 +13,7 @@ export const useAdmin = () => {
       try {
         const userData = await userService.getMe();
         console.log("userData:", userData);
-        // 校验角色 (根据你后端的实际返回值判断)
+        // Validate role (based on your backend's actual return value)
         if (
           userData &&
           (userData.role === "admin" || userData.role === "ADMIN")
@@ -22,13 +22,13 @@ export const useAdmin = () => {
           setUser(userData);
           setLoading(false);
         } else {
-          // 如果不是 admin，跳转回首页或 403 页面
+          // If not an admin, redirect back to home or a 403 page
           console.warn("Unauthorized access: Not an admin");
           navigate("/");
         }
       } catch (error) {
         console.error("Auth verification failed:", error);
-        // 如果 Token 无效或过期，跳回登录页
+        // If the token is invalid or expired, redirect back to the login page
         navigate("/login");
       }
     };
@@ -36,6 +36,6 @@ export const useAdmin = () => {
     verifyAdmin();
   }, [navigate]);
 
-  // 返回组件需要用的状态
+  // Return the state needed by the component
   return { isAdmin, loading, user };
 };

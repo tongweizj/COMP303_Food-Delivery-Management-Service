@@ -56,7 +56,7 @@ public class OrderService {
 	public Mono<Order> update(String id, Order o) {
 	    return orderRepository.findById(id)
 	        .flatMap(existingOrder -> {
-	            // 1. 用户 ID 和 餐厅 ID 通常在下单后不更改，但如果请求中有值则更新
+	            // 1. User ID and Restaurant ID usually don't change after ordering, but update if values are present in the request
 	            if (o.getUserId() != null) {
 	                existingOrder.setUserId(o.getUserId());
 	            }
@@ -64,22 +64,22 @@ public class OrderService {
 	                existingOrder.setRestaurantId(o.getRestaurantId());
 	            }
 
-	            // 2. 更新订单状态 (这是 update 接口最常用的功能)
+	            // 2. Update order status (this is the most common use of the update interface)
 	            if (o.getOrderStatus() != null) {
 	                existingOrder.setOrderStatus(o.getOrderStatus());
 	            }
 
-	            // 3. 更新金额 (注意 Double 是包装类，可以判 null)
+	            // 3. Update amount (note that Double is a wrapper class and can be checked for null)
 	            if (o.getTotalAmount() != null) {
 	                existingOrder.setTotalAmount(o.getTotalAmount());
 	            }
 
-	            // 4. 更新订单项列表
+	            // 4. Update the list of order items
 	            if (o.getItems() != null && !o.getItems().isEmpty()) {
 	                existingOrder.setItems(o.getItems());
 	            }
 
-	            // 5. 更新送货地址和备注
+	            // 5. Update delivery address and notes
 	            if (o.getDeliveryAddress() != null) {
 	                existingOrder.setDeliveryAddress(o.getDeliveryAddress());
 	            }
@@ -87,18 +87,18 @@ public class OrderService {
 	                existingOrder.setNote(o.getNote());
 	            }
 
-	            // 6. 订单日期通常保持下单时间不变，除非你明确想更新它
+	            // 6. Order date usually stays the same as the order time unless you specifically want to update it
 	            if (o.getOrderDate() != null) {
 	                existingOrder.setOrderDate(o.getOrderDate());
 	            }
 
-	            // 确保 ID 一致性
+	            // Ensure ID consistency
 	            existingOrder.setOrderId(id);
 
-	            // 保存并返回更新后的对象
+	            // Save and return the updated object
 	            return orderRepository.save(existingOrder);
 	        })
-	        // 如果找不到 ID，抛出异常或返回空
+	        // If ID is not found, throw an exception or return empty
 	        .switchIfEmpty(Mono.error(new RuntimeException("Order not found with id: " + id)));
 	}
 	// Delete an order by ID

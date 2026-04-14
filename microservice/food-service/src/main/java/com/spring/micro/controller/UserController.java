@@ -78,15 +78,15 @@ public class UserController {
     }
     @GetMapping("/api/me")
     public Map<String, Object> getCurrentUser(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
-    	// 1. 获取所有的 Claims
+    	// 1. Get all Claims
         Map<String, Object> attributes = authentication.getTokenAttributes();
         
-        // 2. 提取信息
-        String email = authentication.getToken().getSubject(); // 即你存入的 username
-        String role =  authentication.getToken().getClaimAsString("role");// 对应你生成 token 时的 .claim("role", role)
+        // 2. Extract information
+        String email = authentication.getToken().getSubject(); // This is the username you stored
+        String role =  authentication.getToken().getClaimAsString("role");// Corresponds to the .claim("role", role) when you generated the token
         System.out.println(role); 
 
-        // 3. 组装返回结果 (类似 Express 的响应结构)
+        // 3. Assemble the return result (similar to Express response structure)
         Map<String, Object> response = new HashMap<>();
         response.put("email", email);
         response.put("role", role);

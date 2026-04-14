@@ -32,50 +32,50 @@ public class MenuItemWebController {
 	            new ReactiveDataDriverContextVariable(menuItemService.getAll(), 1);
 	        model.addAttribute("menuitems", reactiveData);
 
-		return "menuitem/list"; // 对应 templates/index.html
+		return "menuitem/list"; // Corresponds to templates/menuitem/list.html
 	}
 	
 	@GetMapping("/create")
 	public String createFood(Model model) {
 		model.addAttribute("menuItem", new MenuItem());
-		return "menuitem/form"; // 对应 templates/index.html
+		return "menuitem/form"; // Corresponds to templates/menuitem/form.html
 	}
 	
 	@GetMapping("/{id}/edit")
 	public Mono<String> editFood(@PathVariable("id") String id, Model model) {
 
 		return menuItemService.getById(id)
-	            // 2. 将查到的 item 放入 model 中
+	            // 2. Put the retrieved item into the model
 	            .doOnNext(item -> {
 	                model.addAttribute("menuItem", item);
-	                // 这里的 key "menuItem" 必须和详情页模板中的变量名一致
+	                // The key "menuItem" here must match the variable name in the detail page template
 	                System.out.println("Displaying details for: " + item.getItemName());
 	            })
-	            // 3. 成功后返回逻辑视图名
+	            // 3. Return the logical view name upon success
 	            .thenReturn("menuitem/form")
-	            // 4. 容错处理：如果数据库查不到这个 ID，重定向回列表页，避免页面崩掉
-	            .defaultIfEmpty("redirect:/menuitems"); // 对应 templates/index.html
+	            // 4. Error handling: If ID is not found in the database, redirect back to the list page to avoid page crash
+	            .defaultIfEmpty("redirect:/menuitems"); // Corresponds to templates/menuitem/list.html
 	}
 	
 	@GetMapping("/{id}")
 	public Mono<String> detailFood(@PathVariable("id") String id, Model model) {
 
 		return menuItemService.getById(id)
-	            // 2. 将查到的 item 放入 model 中
+	            // 2. Put the retrieved item into the model
 	            .doOnNext(item -> {
 	                model.addAttribute("menuItem", item);
-	                // 这里的 key "menuItem" 必须和详情页模板中的变量名一致
+	                // The key "menuItem" here must match the variable name in the detail page template
 	                System.out.println("Displaying details for: " + item.getItemName());
 	            })
-	            // 3. 成功后返回逻辑视图名
+	            // 3. Return the logical view name upon success
 	            .thenReturn("menuitem/detail")
-	            // 4. 容错处理：如果数据库查不到这个 ID，重定向回列表页，避免页面崩掉
+	            // 4. Error handling: If ID is not found in the database, redirect back to the list page to avoid page crash
 	            .defaultIfEmpty("redirect:/menuitems");
 	}
 	
 	@PostMapping("/save")
 	public Mono<String> saveMenuItem(@ModelAttribute("menuItem") MenuItem menuItem) {
-	    return menuItemService.save(menuItem) // 调用 Reactive Repository
+	    return menuItemService.save(menuItem) // Call Reactive Repository
 	            .thenReturn("redirect:/menuitems");
 	}
 	

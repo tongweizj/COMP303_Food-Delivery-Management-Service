@@ -40,7 +40,7 @@ function CheckoutPage() {
       items: cartItems,
       totalAmount: totalAmount,
       orderStatus: "PLACED",
-      deliveryAddress: user.address, // 模拟地址数据
+      deliveryAddress: user.address, // Simulated address data
       restaurantId: restaurantId,
     };
     console.log("orderPayload:", orderPayload);
@@ -52,7 +52,7 @@ function CheckoutPage() {
         navigate(`/order-success/${response.orderId}`);
       }
     } catch (err) {
-      setError("提交订单失败，请重试。");
+      setError("Failed to submit order, please try again.");
     } finally {
       setLoading(false);
     }
@@ -61,9 +61,9 @@ function CheckoutPage() {
   if (cartItems.length === 0) {
     return (
       <div className="container mt-5 text-center">
-        <h2>购物车是空的</h2>
+        <h2>Shopping cart is empty</h2>
         <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
-          去点餐
+          Order food
         </button>
       </div>
     );
@@ -75,19 +75,19 @@ function CheckoutPage() {
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-2">正在加载用户信息...</p>
+        <p className="mt-2">Loading user information...</p>
       </div>
     );
   }
   return (
     <div className="container mt-4">
-      {/* 1. 用户地址放在最顶端 */}
+      {/* 1. User address at the top */}
       <div className="row mb-4">
         <div className="col-12">
           <div className="card shadow-sm border-0 bg-light">
             <div className="card-body">
               <h5 className="text-muted small text-uppercase fw-bold">
-                收货地址
+                Delivery Address
               </h5>
               <div className="d-flex align-items-center">
                 <span className="fs-4 me-2">📍</span>
@@ -104,14 +104,14 @@ function CheckoutPage() {
       </div>
 
       <div className="row">
-        {/* 左侧：已点菜品列表（带图片） */}
+        {/* Left side: List of ordered items (with images) */}
         <div className="col-lg-8">
-          <h4 className="mb-3">订单详情</h4>
+          <h4 className="mb-3">Order Details</h4>
           {cartItems.map((item) => (
             <div key={item.foodItemId} className="card shadow-sm mb-3 border-0">
               <div className="row g-0 align-items-center">
                 <div className="col-3 col-md-2">
-                  {/* 2. 显示菜单图片 */}
+                  {/* 2. Display menu item image */}
                   <img
                     src={
                       item.imageUrl ||
@@ -131,7 +131,7 @@ function CheckoutPage() {
                     <div>
                       <h6 className="mb-0">{item.foodName}</h6>
                       <small className="text-muted">
-                        单价: ${item.unitPrice.toFixed(2)}
+                        Unit Price: ${item.unitPrice.toFixed(2)}
                       </small>
                     </div>
                     <div className="text-end">
@@ -149,7 +149,7 @@ function CheckoutPage() {
           ))}
         </div>
 
-        {/* 右侧：汇总与提交 */}
+        {/* Right side: Summary and Submit */}
         <div className="col-lg-4">
           <OrderSummary
             items={cartItems}

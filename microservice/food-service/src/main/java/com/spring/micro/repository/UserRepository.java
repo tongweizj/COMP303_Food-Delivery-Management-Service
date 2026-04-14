@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface UserRepository extends ReactiveMongoRepository<User, String> {
 
-	// 自訂查詢方法：透過帳號尋找使用者，回傳 Mono<User>
+	// Custom query method: find user by account, returns Mono<User>
 	Mono<User> findByName(String rname);
 	Mono<User> findByEmail(String email);
 }

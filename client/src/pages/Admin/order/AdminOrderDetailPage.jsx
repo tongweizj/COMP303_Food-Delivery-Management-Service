@@ -21,12 +21,12 @@ const AdminOrderDetailPage = () => {
     const fetchOrderDetail = async () => {
       try {
         setLoading(true);
-        // 假设 adminOrderService 有 getOrderById 方法
+        // Assuming adminOrderService has getOrderById method
         console.log("orderId:", id);
         const data = await adminOrderService.getOrder(id);
         setOrder(data);
       } catch (err) {
-        setError("获取订单详情失败");
+        setError("Failed to fetch order details");
         console.error(err);
       } finally {
         setLoading(false);
@@ -40,7 +40,7 @@ const AdminOrderDetailPage = () => {
       await adminOrderService.updateOrderStatus(id, newStatus);
       setOrder({ ...order, orderStatus: newStatus });
     } catch (err) {
-      alert("更新状态失败");
+      alert("Failed to update status");
     }
   };
 
@@ -53,29 +53,29 @@ const AdminOrderDetailPage = () => {
 
   if (error || !order)
     return (
-      <div className="alert alert-danger m-4">{error || "订单不存在"}</div>
+      <div className="alert alert-danger m-4">{error || "Order not found"}</div>
     );
 
   return (
     <div className="container-fluid py-4">
-      {/* 顶部导航 */}
+      {/* Top Navigation */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <button
             className="btn btn-link text-decoration-none p-0 mb-2"
             onClick={() => navigate(-1)}
           >
-            <i className="bi bi-arrow-left"></i> 返回列表
+            <i className="bi bi-arrow-left"></i> Back to List
           </button>
           <h2 className="h3 mb-0">
-            订单详情{" "}
+            Order Details{" "}
             <span className="text-muted small">
               #{order.orderId.slice(-8).toUpperCase()}
             </span>
           </h2>
         </div>
         <div className="d-flex align-items-center">
-          <label className="me-2 fw-bold">更改状态:</label>
+          <label className="me-2 fw-bold">Change Status:</label>
           <select
             className="form-select form-select-sm border-primary"
             style={{ width: "150px" }}
@@ -92,21 +92,21 @@ const AdminOrderDetailPage = () => {
       </div>
 
       <div className="row">
-        {/* 左侧：订单内容 */}
+        {/* Left: Order Content */}
         <div className="col-lg-8">
           <div className="card shadow-sm border-0 mb-4">
             <div className="card-header bg-white py-3">
-              <h5 className="mb-0">菜品清单</h5>
+              <h5 className="mb-0">Menu Item List</h5>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive">
                 <table className="table align-middle mb-0">
                   <thead className="table-light">
                     <tr>
-                      <th className="ps-4">产品</th>
-                      <th>单价</th>
-                      <th>数量</th>
-                      <th className="text-end pe-4">小计</th>
+                      <th className="ps-4">Product</th>
+                      <th>Unit Price</th>
+                      <th>Quantity</th>
+                      <th className="text-end pe-4">Subtotal</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -150,16 +150,16 @@ const AdminOrderDetailPage = () => {
               <div className="row justify-content-end">
                 <div className="col-md-5">
                   <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">商品总额:</span>
+                    <span className="text-muted">Item Total:</span>
                     <span>${order.totalAmount.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span className="text-muted">配送费:</span>
+                    <span className="text-muted">Delivery Fee:</span>
                     <span>$0.00</span>
                   </div>
                   <hr />
                   <div className="d-flex justify-content-between">
-                    <span className="fw-bold">最终总额:</span>
+                    <span className="fw-bold">Total Amount:</span>
                     <span className="fw-bold text-primary fs-5">
                       ${order.totalAmount.toFixed(2)}
                     </span>
@@ -170,34 +170,34 @@ const AdminOrderDetailPage = () => {
           </div>
         </div>
 
-        {/* 右侧：用户信息与配送详情 */}
+        {/* Right: User Info and Delivery Details */}
         <div className="col-lg-4">
           <div className="card shadow-sm border-0 mb-4">
             <div className="card-body">
-              <h5 className="card-title mb-4">客户信息</h5>
+              <h5 className="card-title mb-4">Customer Information</h5>
               <div className="d-flex align-items-center mb-3">
                 <div className="bg-light rounded-circle p-3 me-3">
                   <i className="bi bi-person text-primary fs-4"></i>
                 </div>
                 <div>
                   <p className="mb-0 fw-bold">
-                    用户 ID: {order.userId.slice(-8)}
+                    User ID: {order.userId.slice(-8)}
                   </p>
                   <p className="text-muted small mb-0">
-                    餐厅 ID: {order.restaurantId.slice(-8)}
+                    Restaurant ID: {order.restaurantId.slice(-8)}
                   </p>
                 </div>
               </div>
               <hr />
               <h6 className="text-muted small text-uppercase fw-bold mb-3">
-                配送地址
+                Delivery Address
               </h6>
               <p className="mb-1">
                 <i className="bi bi-geo-alt me-2 text-danger"></i>
                 {order.deliveryAddress}
               </p>
               <p className="text-muted small">
-                下单日期: {new Date(order.orderDate).toLocaleString()}
+                Order Date: {new Date(order.orderDate).toLocaleString()}
               </p>
             </div>
           </div>
@@ -205,9 +205,9 @@ const AdminOrderDetailPage = () => {
           <div className="card shadow-sm border-0 bg-primary text-white">
             <div className="card-body">
               <h6 className="text-uppercase small fw-bold opacity-75">
-                订单备注
+                Order Notes
               </h6>
-              <p className="mb-0">{order.remarks || "无特殊备注"}</p>
+              <p className="mb-0">{order.remarks || "No special remarks"}</p>
             </div>
           </div>
         </div>

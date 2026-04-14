@@ -30,36 +30,36 @@ public class MenuItemController {
 		this.menuItemService = menuItemService;
 	}
 
-	// 查所有
+	// Find all
 	@GetMapping
 	public Flux<MenuItem> getAll() {
 		return menuItemService.getAll();
 	}
 
-	// 查单个
+	// Find by ID
 	@GetMapping("/{id}")
 	public Mono<MenuItem> getById(@PathVariable String id) {
 		return menuItemService.getById(id);
 	}
-	// 按餐厅ID查菜单
+	// Find menu items by restaurant ID
 	@GetMapping("/restaurant/{restId}")
 	public Flux<MenuItem> getByRestaurantId(@PathVariable String restId) {
 	    return menuItemService.getByRestaurantId(restId);
 	}
-	// 增
+	// Create
 	@PostMapping
 	public Mono<MenuItem> create(@RequestBody MenuItem m) {
 		return menuItemService.save(m);
 	}
 
-	// 改
+	// Update
 	@PutMapping("/{id}")
 	public Mono<MenuItem> updateById(@PathVariable String id, @RequestBody MenuItem m) {
 		System.out.println("Updating menuItem: " + id);
 		return menuItemService.update(id, m);
 	}
 
-	// 删
+	// Delete
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable String id) {
 		System.out.println("Deleting menuItem: " + id);
