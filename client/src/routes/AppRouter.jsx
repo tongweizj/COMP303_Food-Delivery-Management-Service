@@ -24,8 +24,7 @@ import AdminMenuItemDetailsPage from "../pages/admin/food/AdminMenuItemDetailsPa
 import AdminMenuItemListPage from "../pages/admin/food/AdminMenuItemListPage.jsx";
 
 import AdminOrderListPage from "../pages/admin/order/AdminOrderListPage";
-import AdminOrderHistoryPage from "../pages/admin/order/AdminOrderHistoryPage";
-import AdminOrderDetailsPage from "../pages/admin/order/AdminOrderDetailsPage.jsx";
+import AdminOrderDetailPage from "../pages/admin/order/AdminOrderDetailPage.jsx";
 
 import { MainLayout, AdminLayout } from "../components/layout/layout.jsx";
 function AppRouter({ isAuthenticated, onLogout }) {
@@ -84,7 +83,7 @@ function AppRouter({ isAuthenticated, onLogout }) {
           element={<AdminMenuItemDetailsPage />}
         />
         <Route path="/admin/orders" element={<AdminOrderListPage />} />
-        <Route path="/admin/orders/:id" element={<AdminOrderDetailsPage />} />
+        <Route path="/admin/orders/:id" element={<AdminOrderDetailPage />} />
       </Route>
     </Routes>
   );

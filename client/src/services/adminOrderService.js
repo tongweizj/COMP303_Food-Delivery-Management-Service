@@ -26,8 +26,8 @@ const adminOrderService = {
 
   async updateOrderStatus(orderId, status) {
     const response = await apiClient.put(
-      `/orders/${orderId}/status`,
-      { status },
+      `/orders/${orderId}`,
+      { orderStatus: status },
       { headers: getAuthHeaders() },
     );
     return response.data;
