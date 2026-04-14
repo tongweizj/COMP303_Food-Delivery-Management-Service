@@ -1,135 +1,167 @@
-// OrderCartPage.jsx
-import React, { useState } from 'react';
-import orderService from '../../services/orderService';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
+import orderService from "../../services/orderService";
+import userService from "../../services/userService";
+import OrderSummary from "../../components/common/OrderSummary";
 
-function OrderCartPage() {
-  // Placeholder for cart items. In a real app, this would come from global state (Context, Redux, etc.)
-  const [cartItems, setCartItems] = useState([
-    { id: 'm1', name: 'Delicious Pizza', price: 15.99, quantity: 1 },
-    { id: 'm2', name: 'Spicy Burger', price: 12.50, quantity: 2 },
-    { id: 'm3', name: 'Caesar Salad', price: 8.00, quantity: 1 },
-  ]);
+function CheckoutPage() {
+  const { cartItems, totalAmount, clearCart } = useCart();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const [shippingAddress, setShippingAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false);
-  const [orderError, setOrderError] = useState(null);
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const data = await userService.getUserProfile();
+        setUser(data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            "Failed to fetch user profile. You may need to log in again.",
+        );
+        console.error("Fetch user profile error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
-  };
+    fetchUserProfile();
+  }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'shippingAddress') {
-      setShippingAddress(value);
-    } else if (name === 'paymentMethod') {
-      setPaymentMethod(value);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setOrderError(null);
-    setOrderSuccess(false);
-
+  const handleConfirmOrder = async () => {
+    if (cartItems.length === 0) return;
+    setLoading(true);
+    const restaurantId = cartItems[0]?.restaurantId;
+    const orderPayload = {
+      userId: user.id,
+      items: cartItems,
+      totalAmount: totalAmount,
+      orderStatus: "PLACED",
+      deliveryAddress: user.address, // 模拟地址数据
+      restaurantId: restaurantId,
+    };
+    console.log("orderPayload:", orderPayload);
     try {
-      // In a real application, you'd also send user ID, restaurant ID, etc.
-      const orderData = {
-        items: cartItems.map(item => ({
-          menuItemId: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        totalAmount: parseFloat(calculateTotal()),
-        shippingAddress,
-        paymentMethod,
-        // Add more fields like userId, restaurantId if necessary
-      };
-
-      const data = await orderService.createOrder(orderData);
-
-      setOrderSuccess(true);
-      setCartItems([]); // Clear cart after successful order
-      setShippingAddress('');
-      setPaymentMethod('');
-      console.log('Order submitted successfully:', data);
-
+      const response = await orderService.createOrder(orderPayload);
+      console.log("orderService:", response);
+      if (response.orderId) {
+        clearCart();
+        navigate(`/order-success/${response.orderId}`);
+      }
     } catch (err) {
-      setOrderError(err.response?.data?.message || 'Error submitting order. Please check your network or try again.');
-      console.error('Order submission error:', err);
+      setError("提交订单失败，请重试。");
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
-  if (cartItems.length === 0 && !orderSuccess) {
+  if (cartItems.length === 0) {
     return (
-      <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '800px' }}>
-        <h1 className="h2 border-bottom pb-2 mb-4">Your Cart</h1>
-        <p className="text-center">Your cart is empty.</p>
-        {orderError && <div className="alert alert-danger">{orderError}</div>}
+      <div className="container mt-5 text-center">
+        <h2>购物车是空的</h2>
+        <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
+          去点餐
+        </button>
       </div>
     );
   }
 
+  if (loading || !user) {
+    return (
+      <div className="container mt-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-2">正在加载用户信息...</p>
+      </div>
+    );
+  }
   return (
-    <div className="container mt-4 p-4 bg-light rounded shadow-sm" style={{ maxWidth: '800px' }}>
-      <h1 className="h2 border-bottom pb-2 mb-4">Your Cart</h1>
-      {orderSuccess && <div className="alert alert-success">Your order has been placed successfully!</div>}
-      {orderError && <div className="alert alert-danger">{orderError}</div>}
+    <div className="container mt-4">
+      {/* 1. 用户地址放在最顶端 */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <div className="card shadow-sm border-0 bg-light">
+            <div className="card-body">
+              <h5 className="text-muted small text-uppercase fw-bold">
+                收货地址
+              </h5>
+              <div className="d-flex align-items-center">
+                <span className="fs-4 me-2">📍</span>
+                <div>
+                  <p className="mb-0 fw-bold">{user.address}</p>
+                  <p className="mb-0 text-muted small">
+                    {user.name} ({user.phoneNumber})
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <ul className="list-group mb-4">
-        {cartItems.map(item => (
-          <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-            <span>{item.name} <span className="text-muted">x {item.quantity}</span></span>
-            <span className="fw-bold">${(item.price * item.quantity).toFixed(2)}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="text-end h4 fw-bold text-danger">Total: ${calculateTotal()}</div>
+      <div className="row">
+        {/* 左侧：已点菜品列表（带图片） */}
+        <div className="col-lg-8">
+          <h4 className="mb-3">订单详情</h4>
+          {cartItems.map((item) => (
+            <div key={item.foodItemId} className="card shadow-sm mb-3 border-0">
+              <div className="row g-0 align-items-center">
+                <div className="col-3 col-md-2">
+                  {/* 2. 显示菜单图片 */}
+                  <img
+                    src={
+                      item.imageUrl ||
+                      "https://via.placeholder.com/80?text=Food"
+                    }
+                    alt={item.foodName}
+                    className="img-fluid rounded-start p-2"
+                    style={{
+                      height: "80px",
+                      width: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <div className="col-9 col-md-10">
+                  <div className="card-body d-flex justify-content-between align-items-center py-2">
+                    <div>
+                      <h6 className="mb-0">{item.foodName}</h6>
+                      <small className="text-muted">
+                        单价: ${item.unitPrice.toFixed(2)}
+                      </small>
+                    </div>
+                    <div className="text-end">
+                      <span className="badge bg-secondary me-3">
+                        x {item.quantity}
+                      </span>
+                      <span className="fw-bold">
+                        ${(item.unitPrice * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-      <h2 className="h3 border-bottom pb-2 mb-4 mt-5">Checkout Details</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="shippingAddress" className="form-label">Shipping Address:</label>
-          <input
-            type="text"
-            id="shippingAddress"
-            name="shippingAddress"
-            value={shippingAddress}
-            onChange={handleInputChange}
-            required
-            className="form-control"
+        {/* 右侧：汇总与提交 */}
+        <div className="col-lg-4">
+          <OrderSummary
+            items={cartItems}
+            total={totalAmount}
+            onConfirm={handleConfirmOrder}
+            isLoading={loading}
+            error={error}
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="paymentMethod" className="form-label">Payment Method:</label>
-          <input
-            type="text"
-            id="paymentMethod"
-            name="paymentMethod"
-            value={paymentMethod}
-            onChange={handleInputChange}
-            placeholder="e.g., Credit Card, PayPal"
-            required
-            className="form-control"
-          />
-        </div>
-        <button type="submit" disabled={isSubmitting} className="btn btn-success w-100 btn-lg mt-3">
-          {isSubmitting ? (
-            <>
-              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              <span> Placing Order...</span>
-            </>
-          ) : 'Place Order'}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
 
-export default OrderCartPage;
+export default CheckoutPage;

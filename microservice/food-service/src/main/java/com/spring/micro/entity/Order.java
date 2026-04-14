@@ -11,6 +11,9 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
+
+
 @Document(collection = "orders")
 public class Order {
 	// In MongoDB, it is highly recommended to use String for the auto-generated
@@ -30,7 +33,8 @@ public class Order {
 	// as List<OrderItem>,
 	// but keeping it as a simple List<String> also meets the basic assignment
 	// requirements.
-	private List<String> foodItemIds;
+//	private List<String> foodItemIds;
+	private List<OrderItem> items;
 
 	// As per assignment requirements: total amount
 	private Double totalAmount;
@@ -40,6 +44,34 @@ public class Order {
 
 	// As per assignment requirements: order date
 	private LocalDateTime orderDate = LocalDateTime.now();
+	// 补充：收货地址（订餐必备）
+    private String deliveryAddress;
+    
+    // 补充：用户备注
+    private String note;
+	public List<OrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<OrderItem> items) {
+		this.items = items;
+	}
+
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
 
 	// Constructors (It is recommended to have at least a no-argument constructor)
 	public Order() {
@@ -71,13 +103,6 @@ public class Order {
 		this.restaurantId = restaurantId;
 	}
 
-	public List<String> getFoodItemIds() {
-		return foodItemIds;
-	}
-
-	public void setFoodItemIds(List<String> foodItemIds) {
-		this.foodItemIds = foodItemIds;
-	}
 
 	public Double getTotalAmount() {
 		return totalAmount;
