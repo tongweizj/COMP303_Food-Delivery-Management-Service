@@ -53,11 +53,18 @@ public class RestaurantWebController {
     }
     
     // Show details of a single restaurant
+//    @GetMapping("/{id}")
+//    public String detailRestaurant(@PathVariable String id, Model model) {
+//        // Fetch the specific restaurant (Mono) and add it to the model
+//        model.addAttribute("restaurant", restaurantService.getById(id));
+//        return "restaurant/detail"; // Maps to templates/restaurant/detail.html
+//    }
     @GetMapping("/{id}")
-    public String detailRestaurant(@PathVariable String id, Model model) {
-        // Fetch the specific restaurant (Mono) and add it to the model
-        model.addAttribute("restaurant", restaurantService.getById(id));
-        return "restaurant/detail"; // Maps to templates/restaurant/detail.html
+    public Mono<String> detailRestaurant(@PathVariable String id, Model model) {
+        return restaurantService.getById(id)
+            .doOnNext(restaurant -> model.addAttribute("restaurant", restaurant))
+            .map(restaurant -> "restaurant/detail") // 只有当数据到达时才返回视图名
+            .defaultIfEmpty("error/404"); // 如果没找到餐厅，可以重定向到 404
     }
     /**
      * 处理创建和更新的统一保存接口

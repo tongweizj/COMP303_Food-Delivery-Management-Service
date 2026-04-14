@@ -41,27 +41,51 @@ public class UserService {
     public Mono<User> getUserProfile(String email) {
         return userRepository.findByEmail(email);
     }
+//    public Mono<User> save(User user) {
+//        if (user.getEmail() == null || user.getEmail().isBlank()
+//                || user.getPassword() == null || user.getPassword().isBlank()) {
+//            return Mono.error(new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, "User email and password are required!"));
+//        }
+//
+//        return userRepository.findByEmail(user.getEmail())
+//                .flatMap(existingUser -> Mono.<User>error(new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, "User email already exists!")))
+//                .switchIfEmpty(Mono.defer(() -> {
+//                    User newUser = new User();
+//                    newUser.setEmail(user.getEmail());
+//                    newUser.setName(user.getName());
+//                    newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+//                    newUser.setRole("USER");
+//
+//                    return userRepository.save(newUser);
+//                }));
+//    }
     public Mono<User> save(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()
-                || user.getPassword() == null || user.getPassword().isBlank()) {
-            return Mono.error(new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "User email and password are required!"));
+        // 如果是新用户（id为空），则 email 和 password 必须都有
+        if (user.getId() == null || user.getId().isEmpty()) {
+            if (user.getEmail() == null || user.getPassword() == null || user.getPassword().isEmpty()) {
+                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "User email and password are required!"));
+            }
+        } else {
+            // 如果是更新用户信息，email 不能为空，但 password 可以为空（表示不修改密码）
+            if (user.getEmail() == null || user.getEmail().isEmpty()) {
+                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required!"));
+            }
         }
 
-        return userRepository.findByEmail(user.getEmail())
-                .flatMap(existingUser -> Mono.<User>error(new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "User email already exists!")))
-                .switchIfEmpty(Mono.defer(() -> {
-                    User newUser = new User();
-                    newUser.setEmail(user.getEmail());
-                    newUser.setName(user.getName());
-                    newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-                    newUser.setRole("USER");
+        // 处理更新时的密码逻辑：如果新密码为空，需要从数据库获取旧密码填充回去
+        if (user.getId() != null && (user.getPassword() == null || user.getPassword().isEmpty())) {
+            return userRepository.findById(user.getId())
+                .map(oldUser -> {
+                    user.setPassword(oldUser.getPassword()); // 恢复旧密码
+                    return user;
+                })
+                .flatMap(userRepository::save);
+        }
 
-                    return userRepository.save(newUser);
-                }));
+        return userRepository.save(user);
     }
-
     
     public Mono<LoginResponse> login(LoginRequest loginRequest) {
 

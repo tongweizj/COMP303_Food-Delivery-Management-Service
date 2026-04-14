@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
+
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+
+<section>
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/users}">Users</a></li>
+                <li class="breadcrumb-item active" aria-current="page">User Profile</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold">
+                <i class="bi bi-person-badge me-2 text-primary"></i>
+                <span th:text="${user?.name}">Full Name</span>
+                
+                <span th:if="${user?.role != null && !user.role.isEmpty()}" 
+                      th:classappend="${user.role == 'ROLE_ADMIN' ? 'bg-danger' : 'bg-info text-dark'}"
+                      class="badge rounded-pill fs-6 ms-2" 
+                      th:text="${user.role}">ROLE_USER</span>
+                <span th:if="${user?.role == null || user.role.isEmpty()}" 
+                      class="badge rounded-pill bg-secondary fs-6 ms-2">NO ROLE ASSIGNED</span>
+            </h2>
+            <div class="btn-group">
+                <a th:href="@{/users/{id}/edit(id=${user?.id})}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Edit Profile
+                </a>
+                <a th:href="@{/users}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="bi bi-person-lines-fill me-2"></i>Full Profile Data
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">User ID</span>
+                            <small class="fw-mono text-secondary" th:text="${user?.id}">69da...</small>
+                        </li>
+                        
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Access Role</span>
+                            <span class="fw-bold" th:text="${user?.role != null && !user.role.isEmpty() ? user.role : 'N/A'}">Role</span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Email</span>
+                            <span class="fw-bold">
+                                <i class="bi bi-envelope me-1 text-primary"></i>
+                                <span th:text="${user?.email}">example@mail.com</span>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Phone Number</span>
+                            <span class="fw-bold">
+                                <i class="bi bi-telephone me-1 text-success"></i>
+                                <span th:text="${user?.phoneNumber != null && !user.phoneNumber.isEmpty() ? user.phoneNumber : 'Not Provided'}">Phone</span>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item px-0 border-0">
+                            <span class="text-muted d-block mb-2">Registered Address</span>
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                <span th:text="${user?.address != null && !user.address.isEmpty() ? user.address : 'No address on file.'}">Address</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-secondary text-white fw-bold">
+                    <i class="bi bi-shield-lock me-2"></i>Security & Status
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-check-circle-fill text-success fs-2"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0 fw-bold">Password Status</h6>
+                            <small class="text-muted">Encrypted and securely stored in MongoDB</small>
+                        </div>
+                    </div>
+                    <p class="small text-secondary mt-2">
+                        <i class="bi bi-info-circle me-1"></i>
+                        The password hash is present in the system database. To reset, please use the "Edit Profile" section.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card border-primary border-opacity-25 shadow-sm">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-clock-history text-primary fs-1 mb-2"></i>
+                    <h5 class="fw-bold">Activity Tracking</h5>
+                    <p class="text-muted small">View all orders and support tickets related to this user.</p>
+                    <a th:href="@{/orders(userId=${user?.id})}" class="btn btn-sm btn-primary">
+                        View Order History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
