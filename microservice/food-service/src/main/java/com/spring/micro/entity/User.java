@@ -20,7 +20,7 @@ public class User {
     private String email;
     private String password; 
     private String name;
-    private String role; // 權限控管用，例如 ROLE_USER, ROLE_ADMIN
+    private String role; // For access control, e.g., ROLE_USER, ROLE_ADMIN
     
     private String phoneNumber;
     private String address;

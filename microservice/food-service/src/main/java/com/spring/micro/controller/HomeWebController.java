@@ -19,6 +19,6 @@ public class HomeWebController {
 	public String home(Model model) {
 		model.addAttribute("apiName", "Restaurant Management API");
 		model.addAttribute("version", "v1.0");
-		return "index"; // 对应 templates/index.html
+		return "index"; // Corresponds to templates/index.html
 	}
 }

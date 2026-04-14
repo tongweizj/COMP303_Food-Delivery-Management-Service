@@ -44,10 +44,10 @@ public class Order {
 
 	// As per assignment requirements: order date
 	private LocalDateTime orderDate = LocalDateTime.now();
-	// 补充：收货地址（订餐必备）
+	// Additional: Delivery address (essential for ordering)
     private String deliveryAddress;
     
-    // 补充：用户备注
+    // Additional: User notes
     private String note;
 	public List<OrderItem> getItems() {
 		return items;

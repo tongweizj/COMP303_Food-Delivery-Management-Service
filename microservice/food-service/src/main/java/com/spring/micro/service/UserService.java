@@ -62,23 +62,23 @@ public class UserService {
 //                }));
 //    }
     public Mono<User> save(User user) {
-        // 如果是新用户（id为空），则 email 和 password 必须都有
+        // If it's a new user (id is null/empty), both email and password are required
         if (user.getId() == null || user.getId().isEmpty()) {
             if (user.getEmail() == null || user.getPassword() == null || user.getPassword().isEmpty()) {
                 return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "User email and password are required!"));
             }
         } else {
-            // 如果是更新用户信息，email 不能为空，但 password 可以为空（表示不修改密码）
+            // If updating user info, email cannot be empty, but password can be empty (meaning no password change)
             if (user.getEmail() == null || user.getEmail().isEmpty()) {
                 return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required!"));
             }
         }
 
-        // 处理更新时的密码逻辑：如果新密码为空，需要从数据库获取旧密码填充回去
+        // Handle password logic during update: if new password is empty, retrieve the old password from the database and fill it back
         if (user.getId() != null && (user.getPassword() == null || user.getPassword().isEmpty())) {
             return userRepository.findById(user.getId())
                 .map(oldUser -> {
-                    user.setPassword(oldUser.getPassword()); // 恢复旧密码
+                    user.setPassword(oldUser.getPassword()); // Restore old password
                     return user;
                 })
                 .flatMap(userRepository::save);
@@ -144,15 +144,15 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found: " + email)))
                 .flatMap(existingUser -> {
-                    // 只更新允许修改的字段
+                    // Only update allowed fields
                     existingUser.setName(user.getName());
 
-                    // 如果你允许修改邮箱，再打开这一行
+                    // If you allow email updates, uncomment this line
                     // existingUser.setEmail(user.getEmail());
                     existingUser.setAddress(user.getAddress());
                     existingUser.setPhoneNumber(user.getPhoneNumber());
 
-                    // 如果你允许修改密码，要加密后再存
+                    // If you allow password updates, encrypt it before saving
                     if (user.getPassword() != null && !user.getPassword().isBlank()) {
                         existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
                     }

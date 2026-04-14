@@ -63,28 +63,28 @@ public class RestaurantWebController {
     public Mono<String> detailRestaurant(@PathVariable String id, Model model) {
         return restaurantService.getById(id)
             .doOnNext(restaurant -> model.addAttribute("restaurant", restaurant))
-            .map(restaurant -> "restaurant/detail") // 只有当数据到达时才返回视图名
-            .defaultIfEmpty("error/404"); // 如果没找到餐厅，可以重定向到 404
+            .map(restaurant -> "restaurant/detail") // Return view name only when data arrives
+            .defaultIfEmpty("error/404"); // If restaurant not found, can redirect to 404
     }
     /**
-     * 处理创建和更新的统一保存接口
-     * @param restaurant 自动从表单绑定的对象
-     * @return 这里的返回值必须是 Mono<String> 用于 WebFlux 环境下的视图跳转
+     * Unified save interface for handling creation and updates
+     * @param restaurant Object automatically bound from the form
+     * @return The return value here must be Mono<String> for view redirection in a WebFlux environment
      */
     @PostMapping("/save")
     public Mono<String> saveRestaurant(@ModelAttribute("restaurant") Restaurant restaurant) {
-    	// 关键修正：如果 ID 是空字符串，强制设为 null
+    	// Critical fix: If ID is an empty string, force it to null
         if (restaurant.getRestaurantId() != null && restaurant.getRestaurantId().isEmpty()) {
             restaurant.setRestaurantId(null);
         }
-        // 1. 调用响应式服务层保存数据
-        // 2. 使用 .then() 确保保存动作完成后再执行后续操作
-        // 3. 返回 "redirect:/restaurant/list" 告诉浏览器跳转
+        // 1. Call the reactive service layer to save data
+        // 2. Use .then() to ensure the save action completes before executing subsequent operations
+        // 3. Return "redirect:/restaurant/list" to tell the browser to redirect
         return restaurantService.save(restaurant)
         		.doOnNext(saved -> System.out.println("Saved with ID: " + saved.getRestaurantId()))
                 .then(Mono.just("redirect:/restaurants"))
                 .onErrorResume(e -> {
-                    // 如果发生错误，可以记录日志并跳转回表单页（可选）
+                    // If an error occurs, log it and jump back to the form page (optional)
                     System.err.println("Save failed: " + e.getMessage());
                     return Mono.just("restaurant/form");
                 });

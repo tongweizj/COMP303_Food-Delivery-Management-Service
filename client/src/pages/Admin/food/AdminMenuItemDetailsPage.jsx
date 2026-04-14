@@ -13,7 +13,7 @@ const AdminMenuItemDetailsPage = () => {
     const fetchItemDetails = async () => {
       try {
         setLoading(true);
-        // 调用你提供的 service 方法
+        // Call the service method provided
         const data = await adminMenuItemService.getMenuItemById(id);
         setItem(data);
       } catch (err) {
@@ -40,7 +40,7 @@ const AdminMenuItemDetailsPage = () => {
 
   return (
     <div className="container-fluid py-4">
-      {/* 顶部导航与操作栏 */}
+      {/* Top navigation and action bar */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb mb-0">
@@ -72,7 +72,7 @@ const AdminMenuItemDetailsPage = () => {
       </div>
 
       <div className="row">
-        {/* 左侧：菜品图片展示 */}
+        {/* Left: Menu item image display */}
         <div className="col-lg-5 mb-4">
           <div className="card shadow-sm border-0 overflow-hidden">
             <img
@@ -87,7 +87,7 @@ const AdminMenuItemDetailsPage = () => {
           </div>
         </div>
 
-        {/* 右侧：详细信息展示 */}
+        {/* Right: Detailed information display */}
         <div className="col-lg-7">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body p-4">
@@ -101,7 +101,7 @@ const AdminMenuItemDetailsPage = () => {
               </div>
 
               <div className="row g-4 mt-2">
-                {/* 价格卡片 */}
+                {/* Price card */}
                 <div className="col-sm-6">
                   <div className="p-3 border rounded bg-light">
                     <label className="text-muted small text-uppercase fw-bold d-block">
@@ -113,7 +113,7 @@ const AdminMenuItemDetailsPage = () => {
                   </div>
                 </div>
 
-                {/* 类别卡片 */}
+                {/* Category card */}
                 <div className="col-sm-6">
                   <div className="p-3 border rounded bg-light">
                     <label className="text-muted small text-uppercase fw-bold d-block">
@@ -123,7 +123,7 @@ const AdminMenuItemDetailsPage = () => {
                   </div>
                 </div>
 
-                {/* 关联餐厅信息 */}
+                {/* Linked restaurant information */}
                 <div className="col-12">
                   <div className="p-3 border rounded">
                     <label className="text-muted small text-uppercase fw-bold d-block mb-2">
@@ -148,7 +148,7 @@ const AdminMenuItemDetailsPage = () => {
                 </div>
               </div>
 
-              {/* 额外说明（占位） */}
+              {/* Inventory status description */}
               <div className="mt-4 pt-3 border-top">
                 <h6 className="fw-bold">Inventory Status</h6>
                 <p className="text-muted">

@@ -8,9 +8,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class OrderItem {
 	    private String foodItemId;
-	    private String foodName; // 冗余存储：防止菜单价格/名字改了后，历史订单也跟着变
+	    private String foodName; // Redundant storage: prevent historical orders from changing if menu prices/names are modified
 		private Integer quantity;
-	    private Double unitPrice; // 冗余存储：下单时的快照单价
+	    private Double unitPrice; // Redundant storage: snapshot unit price at the time of order
 	    private String imageUrl; 
 	    
 	    public String getFoodItemId() {

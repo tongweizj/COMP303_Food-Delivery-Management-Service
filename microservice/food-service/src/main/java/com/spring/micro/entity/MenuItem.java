@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "menuItems") // 建议显式指定集合名
+@Document(collection = "menuItems") // Recommended to explicitly specify the collection name
 public class MenuItem {
 
     @Id
-    private String menuItemId;    // 建议使用包装类 Long
+    private String menuItemId;    // Recommended to use a wrapper class like Long (though String is used for MongoDB ObjectId)
     
     private String itemName;
     private String imageUrl;
@@ -26,11 +26,11 @@ public class MenuItem {
 
 	private String category;
     
-    private double price;       // 简单作业可用 double，专业项目建议 BigDecimal
+    private double price;       // double is okay for simple assignments, BigDecimal is recommended for professional projects
     
     private boolean availability;
     
-    private String restId;        // 保持一致性
+    private String restId;        // Maintain consistency
 
 	public String getMenuItemId() {
 		return menuItemId;

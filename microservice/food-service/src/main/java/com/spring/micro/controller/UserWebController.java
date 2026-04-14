@@ -22,7 +22,7 @@ public class UserWebController {
 	
 	@GetMapping("/users")
 	public String users(Model model) {
-		// 使用 ReactiveDataDriver 模式处理用户列表
+		// Use ReactiveDataDriver mode to handle the user list
         IReactiveDataDriverContextVariable reactiveData = 
                 new ReactiveDataDriverContextVariable(userService.getAllUsers(), 1);
         model.addAttribute("users", reactiveData);
@@ -54,7 +54,7 @@ public class UserWebController {
 	}
 	@PostMapping("/users/save")
 	public Mono<String> saveUser(@ModelAttribute("user") User user) {
-	    // 强制处理：如果 ID 是空字符串（创建模式下 Thymeleaf 可能会传 ""），设为 null 以便 MongoDB 生成新 ID
+	    // Force handling: If ID is an empty string (Thymeleaf might pass "" in create mode), set to null so MongoDB generates a new ID
 	    if (user.getId() != null && user.getId().isEmpty()) {
 	        user.setId(null);
 	    }
@@ -65,7 +65,7 @@ public class UserWebController {
 	
 	@GetMapping("/users/delete/{id}")
 	public Mono<String> deleteUser(@PathVariable String id) {
-	    // 调用 service 执行删除逻辑
+	    // Call service to execute delete logic
 	    return userService.deleteUser(id)
 	            .doOnSuccess(v -> System.out.println("User deleted: " + id))
 	            .then(Mono.just("redirect:/users"));

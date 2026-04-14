@@ -24,14 +24,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 	@Value("${jwt.secret}")
     private String jwtSecret;
-	// 1. 注意這裡回傳的型態與參數，全部換成 WebFlux 專用的 Web 版本！
+	// 1. Note that the return type and parameters are all changed to the WebFlux-specific Web versions!
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 		http
-				// 2. 關閉 CSRF
+				// 2. Disable CSRF
 				.csrf(csrf -> csrf.disable())
 
-				// 3. WebFlux 是用 authorizeExchange 而不是 authorizeHttpRequests
+				// 3. WebFlux uses authorizeExchange instead of authorizeHttpRequests
 				.authorizeExchange(
 						exchanges -> exchanges
 						// preflight
@@ -60,7 +60,7 @@ public class SecurityConfig {
                         .anyExchange().permitAll()
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtDecoder(jwtDecoder())))
-				// 4. 關閉預設的登入與 Basic 驗證
+				// 4. Disable default login and Basic authentication
 				.httpBasic(basic -> basic.disable())
 				.formLogin(form -> form.disable());
 
@@ -76,7 +76,7 @@ public class SecurityConfig {
 	    }
 	  
 
-	// 新增這個 Bean，讓 Spring 幫我們管理密碼加密器
+	// Add this Bean so Spring can manage the password encoder for us
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
