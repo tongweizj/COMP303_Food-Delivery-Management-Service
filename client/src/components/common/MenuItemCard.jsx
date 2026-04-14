@@ -6,20 +6,20 @@ function MenuItemCard({ menuItem, restaurantId }) {
   const { addItem } = useCart();
   console.log("restaurantId:", restaurantId);
   const handleAddToCart = () => {
-    // 3. 构造符合 OrderItem Schema 的对象
+    // 3. Construct an object that conforms to the OrderItem Schema
     const orderItem = {
-      foodItemId: menuItem.menuItemId, // 确保 ID 字段匹配
+      foodItemId: menuItem.menuItemId, // Ensure ID field matches
       foodName: menuItem.itemName,
       unitPrice: menuItem.price,
       imageUrl: menuItem.imageUrl,
       restaurantId: restaurantId,
-      // quantity: 1  <-- 注意：我们在 CartContext 的 reducer 里已经默认设置了 quantity: 1
+      // quantity: 1  <-- Note: We have already set quantity: 1 by default in the CartContext reducer
     };
 
     addItem(orderItem);
 
-    // 可选：添加一个简单的视觉反馈
-    console.log("已添加至购物车:", orderItem.foodName);
+    // Optional: Add a simple visual feedback
+    console.log("Added to cart:", orderItem.foodName);
   };
   return (
     <div className="card shadow-sm h-100">
