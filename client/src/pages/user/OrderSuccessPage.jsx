@@ -3,10 +3,10 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 function OrderSuccessPage() {
-  const { orderId } = useParams(); // 从 URL 获取订单号
+  const { orderId } = useParams(); // Get order ID from URL
   const navigate = useNavigate();
 
-  // 模拟预估送达时间（当前时间 + 30分钟）
+  // Simulate estimated delivery time (current time + 30 minutes)
   const arrivalTime = new Date(Date.now() + 30 * 60000).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -17,7 +17,7 @@ function OrderSuccessPage() {
       <div className="row justify-content-center">
         <div className="col-md-6 text-center">
           <div className="card shadow border-0 p-5">
-            {/* 成功图标 */}
+            {/* Success icon */}
             <div className="mb-4">
               <div
                 className="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -53,7 +53,7 @@ function OrderSuccessPage() {
               </button>
               <button
                 className="btn btn-outline-secondary"
-                onClick={() => navigate("/orders")} // 假设你以后会写一个订单历史页
+                onClick={() => navigate("/orders")} // Assuming you will write an order history page later
               >
                 View Order History
               </button>
