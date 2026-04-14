@@ -6,34 +6,94 @@
 </head>
 <body>
 <section>
-    <div class="mb-4">
-        <h2 class="fw-bold">Order Details</h2>
-        <a th:href="@{/orders}" class="btn btn-outline-secondary btn-sm">Back to List</a>
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold"><i class="bi bi-receipt me-2"></i>Order Details</h2>
+        <a th:href="@{/orders}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white">Summary</div>
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="bi bi-info-circle me-2"></i>Summary
+                </div>
                 <div class="card-body">
-                    <p><strong>Order ID:</strong> <span th:text="${order.orderId}"></span></p>
-                    <p><strong>Customer ID:</strong> <span th:text="${order.userId}"></span></p>
-                    <p><strong>Restaurant ID:</strong> <span th:text="${order.restaurantId}"></span></p>
-                    <p><strong>Total Amount:</strong> <span class="text-success fw-bold" th:text="${'$' + order.totalAmount}"></span></p>
-                    <p><strong>Current Status:</strong> <span class="badge bg-secondary" th:text="${order.orderStatus}"></span></p>
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td class="text-muted" style="width: 40%;">Order ID</td>
+                            <td class="fw-medium" th:text="${order.orderId}">ID</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Status</td>
+                            <td>
+                                <span th:classappend="${order.orderStatus == 'Delivered' ? 'bg-success' : (order.orderStatus == 'Cancelled' ? 'bg-danger' : 'bg-warning text-dark')}"
+                                      class="badge" th:text="${order.orderStatus}">Status</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Order Date</td>
+                            <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">Date</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Total Amount</td>
+                            <td class="text-success fw-bold fs-5" th:text="${'$' + #numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</td>
+                        </tr>
+                    </table>
+                    <hr>
+                    <div class="mb-3">
+                        <label class="text-muted d-block small mb-1">Delivery Address</label>
+                        <p class="mb-0 fw-medium"><i class="bi bi-geo-alt text-danger me-1"></i><span th:text="${order.deliveryAddress}">Address</span></p>
+                    </div>
+                    <div th:if="${order.note != null && !order.note.isEmpty()}">
+                        <label class="text-muted d-block small mb-1">Note</label>
+                        <p class="text-secondary italic small" th:text="${order.note}">Note content</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white">Items in Order</div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item" th:each="foodId : ${order.foodItemIds}">
-                            <i class="bi bi-box-seam me-2"></i> Food Item ID: <span th:text="${foodId}"></span>
-                        </li>
-                    </ul>
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="bi bi-bag-check me-2"></i>Items in Order
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Price</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${order.items}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" 
+                                                 alt="food" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <i th:unless="${item.imageUrl != null}" class="bi bi-egg-fried fs-4 me-2 text-secondary"></i>
+                                            <div>
+                                                <div class="fw-bold" th:text="${item.foodName}">Food Name</div>
+                                                <small class="text-muted" th:text="${'ID: ' + item.foodItemId}">ID</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${'$' + #numbers.formatDecimal(item.unitPrice, 1, 2)}">$0.00</td>
+                                    <td class="text-center" th:text="${item.quantity}">1</td>
+                                    <td class="text-end fw-bold" th:text="${'$' + #numbers.formatDecimal(item.unitPrice * item.quantity, 1, 2)}">$0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-end py-3">
+                    <span class="text-muted me-2">Grand Total:</span>
+                    <span class="h4 fw-bold text-primary" th:text="${'$' + #numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</span>
                 </div>
             </div>
         </div>

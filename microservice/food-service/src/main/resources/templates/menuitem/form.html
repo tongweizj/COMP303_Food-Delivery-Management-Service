@@ -1,91 +1,136 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
-
-<head>
-    <title th:text="${menuItem.menuItemId == 0 ? 'Add Menu Item' : 'Edit Menu Item'}">Menu Item Form</title>
-</head>
-<body>
-
-<section>
-    <div class="mb-4">
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{common/layout :: layout(~{::title}, ~{::section})}"
+>
+  <head>
+    <title
+      th:text="${menuItem.menuItemId == 0 ? 'Add Menu Item' : 'Edit Menu Item'}"
+    >
+      Menu Item Form
+    </title>
+  </head>
+  <body>
+    <section>
+      <div class="mb-4">
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a th:href="@{/menuitems}">Menu List</a></li>
-                <li class="breadcrumb-item active" aria-current="page" 
-                    th:text="${menuItem.menuItemId == null ? 'Create' : 'Edit'}">Action</li>
-            </ol>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a th:href="@{/menuitems}">Menu List</a>
+            </li>
+            <li
+              class="breadcrumb-item active"
+              aria-current="page"
+              th:text="${menuItem.menuItemId == null ? 'Create' : 'Edit'}"
+            >
+              Action
+            </li>
+          </ol>
         </nav>
-        <h2 class="fw-bold" th:text="${menuItem.menuItemId == null ? 'Add New Menu Item' : 'Edit Menu Item'}">Form Title</h2>
-    </div>
+        <h2
+          class="fw-bold"
+          th:text="${menuItem.menuItemId == null ? 'Add New Menu Item' : 'Edit Menu Item'}"
+        >
+          Form Title
+        </h2>
+      </div>
 
-    <div class="card shadow-sm border-0">
+      <div class="card shadow-sm border-0">
         <div class="card-body p-4">
-            <form th:action="@{/menuitem/save}" th:object="${menuItem}" method="post">
-                
-                <input type="hidden" th:field="*{menuItemId}" />
+          <form
+            th:action="@{/menuitems/save}"
+            th:object="${menuItem}"
+            method="post"
+          >
+            <input type="hidden" th:field="*{menuItemId}" />
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="itemName" class="form-label">Item Name</label>
-                        <input type="text" class="form-control" th:field="*{itemName}" 
-                               placeholder="e.g. Pepperoni Pizza" required />
-                    </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="itemName" class="form-label">Item Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{itemName}"
+                  placeholder="e.g. Pepperoni Pizza"
+                  required
+                />
+              </div>
 
-                    <div class="col-md-6">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-select" th:field="*{category}" required>
-                            <option value="" selected disabled>Choose category...</option>
-                            <option value="Appetizer">Appetizer</option>
-                            <option value="Main Course">Main Course</option>
-                            <option value="Dessert">Dessert</option>
-                            <option value="Beverage">Beverage</option>
-                            <option value="Sides">Sides</option>
-                        </select>
-                    </div>
+              <div class="col-md-6">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" th:field="*{category}" required>
+                  <option value="" selected disabled>Choose category...</option>
+                  <option value="Appetizer">Appetizer</option>
+                  <option value="Main Course">Main Course</option>
+                  <option value="Dessert">Dessert</option>
+                  <option value="Beverage">Beverage</option>
+                  <option value="Sides">Sides</option>
+                </select>
+              </div>
 
-                    <div class="col-md-12">
-                        <label for="imageUrl" class="form-label">Cover Image URL</label>
-                        <input type="url" class="form-control" th:field="*{imageUrl}" 
-                               placeholder="e.g. https://example.com/menu-item.jpg" />
-                    </div>
+              <div class="col-md-12">
+                <label for="imageUrl" class="form-label">Cover Image URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  th:field="*{imageUrl}"
+                  placeholder="e.g. https://example.com/menu-item.jpg"
+                />
+              </div>
 
-                    <div class="col-md-4">
-                        <label for="price" class="form-label">Price</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" step="0.01" class="form-control" th:field="*{price}" 
-                                   placeholder="0.00" required />
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="restId" class="form-label">Restaurant ID</label>
-                        <input type="text" class="form-control" th:field="*{restId}" 
-                               placeholder="Enter numeric Restaurant ID" required />
-                    </div>
-
-                    <div class="col-md-4 d-flex align-items-end">
-                        <div class="form-check form-switch mb-2">
-                            <input class="form-check-input" type="checkbox" role="switch" 
-                                   id="availability" th:field="*{availability}">
-                            <label class="form-check-label" for="availability">Available for Order</label>
-                        </div>
-                    </div>
+              <div class="col-md-4">
+                <label for="price" class="form-label">Price</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    class="form-control"
+                    th:field="*{price}"
+                    placeholder="0.00"
+                    required
+                  />
                 </div>
+              </div>
 
-                <hr class="my-4">
+              <div class="col-md-4">
+                <label for="restId" class="form-label">Restaurant ID</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{restId}"
+                  placeholder="Enter numeric Restaurant ID"
+                  required
+                />
+              </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <a th:href="@{/menuitems}" class="btn btn-light px-4">Cancel</a>
-                    <button type="submit" class="btn btn-primary px-5">
-                        <i class="bi bi-save me-1"></i> Save Item
-                    </button>
+              <div class="col-md-4 d-flex align-items-end">
+                <div class="form-check form-switch mb-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="availability"
+                    th:field="*{availability}"
+                  />
+                  <label class="form-check-label" for="availability"
+                    >Available for Order</label
+                  >
                 </div>
-            </form>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-end gap-2">
+              <a th:href="@{/menuitems}" class="btn btn-light px-4">Cancel</a>
+              <button type="submit" class="btn btn-primary px-5">
+                <i class="bi bi-save me-1"></i> Save Item
+              </button>
+            </div>
+          </form>
         </div>
-    </div>
-</section>
-
-</body>
+      </div>
+    </section>
+  </body>
 </html>

@@ -13,7 +13,7 @@
             <h2 class="fw-bold">Restaurant Management</h2>
             <p class="text-muted">Browse and manage all registered restaurants in the system.</p>
         </div>
-        <a th:href="@{/restaurant/create}" class="btn btn-primary">
+        <a th:href="@{/restaurants/create}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Add New Restaurant
         </a>
     </div>
@@ -53,15 +53,15 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
-                                <a th:href="@{/restaurant/{id}(id=${item.restaurantId})}" 
+                                <a th:href="@{/restaurants/{id}(id=${item.restaurantId})}" 
                                    class="btn btn-sm btn-outline-secondary" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a th:href="@{/restaurant/edit/{id}(id=${item.restaurantId})}" 
+                                <a th:href="@{/restaurants/edit/{id}(id=${item.restaurantId})}" 
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a th:href="@{/restaurant/delete/{id}(id=${item.restaurantId})}" 
+                                <a th:href="@{/restaurants/delete/{id}(id=${item.restaurantId})}" 
                                    class="btn btn-sm btn-outline-danger" 
                                    onclick="return confirm('Are you sure you want to delete this restaurant?')"
                                    title="Delete">
