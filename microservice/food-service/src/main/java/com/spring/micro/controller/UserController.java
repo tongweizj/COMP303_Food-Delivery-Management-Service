@@ -30,10 +30,10 @@ import reactor.core.publisher.Mono;
 public class UserController {
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	@Autowired
-    private UserService userService;
-	
+	private UserService userService;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -43,22 +43,25 @@ public class UserController {
 	 */
 	@PostMapping("/api/auth/signup")
 	public Mono<User> createUser(@RequestBody User user) {
-	    return userService.save(user);
+		String encodedPassword = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPassword);
+		return userService.save(user);
 	}
-    
+
 	@PostMapping("/api/auth/login")
 	public Mono<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-	    return userService.login(loginRequest);
+		return userService.login(loginRequest);
 	}
-    @GetMapping("/api/users")
-    public Flux<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
-    @GetMapping("/api/users/{id}")
-    public  Mono<User> getUserById(@PathVariable String id) {
-        return userService.getUserById(id);
-    }
+	@GetMapping("/api/users")
+	public Flux<User> getAllUsers() {
+		return userService.getAllUsers();
+	}
+
+	@GetMapping("/api/users/{id}")
+	public Mono<User> getUserById(@PathVariable String id) {
+		return userService.getUserById(id);
+	}
 
 //    @GetMapping("/api/users/profile")
 //    public Mono<User> getUserProfile(@RequestHeader("Authorization") String authHeader) {
@@ -67,47 +70,52 @@ public class UserController {
 //        System.out.println("==== AUTH HEADER END ====");
 //        return userService.getUserProfile(authHeader);
 //    }
-    
-    @GetMapping("/api/users/profile")
-    public Mono<User> getProfile(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
-    	System.out.println("==== AUTH HEADER START ====");
-    	System.out.println(authentication);
-        String email = authentication.getToken().getSubject();
-        
-        return userService.getUserProfile(email);
-    }
-    @GetMapping("/api/me")
-    public Map<String, Object> getCurrentUser(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
-    	// 1. Get all Claims
-        Map<String, Object> attributes = authentication.getTokenAttributes();
-        
-        // 2. Extract information
-        String email = authentication.getToken().getSubject(); // This is the username you stored
-        String role =  authentication.getToken().getClaimAsString("role");// Corresponds to the .claim("role", role) when you generated the token
-        System.out.println(role); 
 
-        // 3. Assemble the return result (similar to Express response structure)
-        Map<String, Object> response = new HashMap<>();
-        response.put("email", email);
-        response.put("role", role);
-        return response;
-    }
-    @PutMapping("/api/users/profile")
-    public Mono<User> getUserProfile(@RequestHeader("Authorization") String authHeader, @RequestBody User user) {
-    	System.out.println("==== AUTH HEADER START ====");
-        System.out.println(authHeader);
-        System.out.println("==== AUTH HEADER END ====");
-        return userService.updateUser(authHeader,user);
-    }
+	@GetMapping("/api/users/profile")
+	public Mono<User> getProfile(
+			org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
+		System.out.println("==== AUTH HEADER START ====");
+		System.out.println(authentication);
+		String email = authentication.getToken().getSubject();
 
-    @PutMapping("/api/users/{id}")
-    public  Mono<User> updateUser(@PathVariable String id, @RequestBody User user) {
-        return userService.updateUser(id, user);
-    }
+		return userService.getUserProfile(email);
+	}
 
-    @DeleteMapping("/api/users/{id}")
-    public String deleteUser(@PathVariable String id) {
-    	userService.deleteUser(id);
-        return "User deleted successfully with id: " + id;
-    }
+	@GetMapping("/api/me")
+	public Map<String, Object> getCurrentUser(
+			org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken authentication) {
+		// 1. Get all Claims
+		Map<String, Object> attributes = authentication.getTokenAttributes();
+
+		// 2. Extract information
+		String email = authentication.getToken().getSubject(); // This is the username you stored
+		String role = authentication.getToken().getClaimAsString("role");// Corresponds to the .claim("role", role) when
+																			// you generated the token
+		System.out.println(role);
+
+		// 3. Assemble the return result (similar to Express response structure)
+		Map<String, Object> response = new HashMap<>();
+		response.put("email", email);
+		response.put("role", role);
+		return response;
+	}
+
+	@PutMapping("/api/users/profile")
+	public Mono<User> getUserProfile(@RequestHeader("Authorization") String authHeader, @RequestBody User user) {
+		System.out.println("==== AUTH HEADER START ====");
+		System.out.println(authHeader);
+		System.out.println("==== AUTH HEADER END ====");
+		return userService.updateUser(authHeader, user);
+	}
+
+	@PutMapping("/api/users/{id}")
+	public Mono<User> updateUser(@PathVariable String id, @RequestBody User user) {
+		return userService.updateUser(id, user);
+	}
+
+	@DeleteMapping("/api/users/{id}")
+	public String deleteUser(@PathVariable String id) {
+		userService.deleteUser(id);
+		return "User deleted successfully with id: " + id;
+	}
 }
