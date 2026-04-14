@@ -7,6 +7,9 @@ package com.spring.micro.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +33,7 @@ public class MenuItem {
     
     private boolean availability;
     
+    @Field(targetType = FieldType.OBJECT_ID)
     private String restId;        // Maintain consistency
 
 	public String getMenuItemId() {
