@@ -89,4 +89,9 @@ public class RestaurantWebController {
                     return Mono.just("restaurant/form");
                 });
     }
+    @GetMapping("/delete/{id}")
+    public Mono<String> deleteRestaurant(@PathVariable String id) {
+        return restaurantService.delete(id)
+                .then(Mono.just("redirect:/restaurants"));
+    }
 }
