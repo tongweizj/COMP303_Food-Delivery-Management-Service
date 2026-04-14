@@ -79,7 +79,10 @@ function RestaurantDetailsPage() {
           {menuItems && menuItems.length > 0 ? (
             menuItems.map((item) => (
               <div className="col-lg-4 col-md-6" key={item.menuItemId}>
-                <MenuItemCard menuItem={item} />
+                <MenuItemCard
+                  menuItem={item}
+                  restaurantId={restaurant.restaurantId}
+                />
               </div>
             ))
           ) : (

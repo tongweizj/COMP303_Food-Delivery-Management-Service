@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import MainFooter from "./components/layout/MainFooter";
-import MainNavbar from "./components/layout/MainNavbar";
 import AppRouter from "./routes/AppRouter";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -21,7 +20,9 @@ function App() {
     navigate("/login");
   };
   return (
-    <AppRouter isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+    <CartProvider>
+      <AppRouter isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+    </CartProvider>
   );
 }
 

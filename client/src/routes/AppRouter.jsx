@@ -11,6 +11,7 @@ import SignupPage from "../pages/auth/SignupPage";
 import HomePage from "../pages/user/HomePage";
 import RestaurantDetailsPage from "../pages/user/RestaurantDetailsPage";
 import OrderCartPage from "../pages/user/OrderCartPage";
+import OrderSuccessPage from "../pages/user/OrderSuccessPage.jsx";
 import UserProfilePage from "../pages/user/UserProfilePage";
 
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
@@ -39,6 +40,7 @@ function AppRouter({ isAuthenticated, onLogout }) {
         <Route path="/" element={<HomePage />} />
         <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
         <Route path="/cart" element={<OrderCartPage />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />

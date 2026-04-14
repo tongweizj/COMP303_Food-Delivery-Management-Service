@@ -1,9 +1,15 @@
-// src/components/layout/MainNavbar.jsx
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 import "./layout.css";
 
 function MainNavbar({ isAuthenticated, onLogout }) {
+  // 2. 解构出 clearCart 方法
+  const { clearCart, totalQuantity } = useCart();
+  const logoutAndClear = () => {
+    clearCart(); // 清空内存中的购物车
+    onLogout(); // 执行 App.jsx 传下来的注销逻辑
+  };
   return (
     <header>
       <nav className="navbar navbar-expand-lg app-navbar">
@@ -36,9 +42,17 @@ function MainNavbar({ isAuthenticated, onLogout }) {
 
             {/* Right actions */}
             <div className="d-flex align-items-center gap-2 ms-lg-auto">
-              <NavLink className="nav-link app-nav-link" to="/cart">
-                Cart
-              </NavLink>
+              <Link
+                to="/cart"
+                className="btn btn-outline-primary position-relative"
+              >
+                <i className="bi bi-cart"></i> Cart
+                {totalQuantity > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {totalQuantity}
+                  </span>
+                )}
+              </Link>
 
               {isAuthenticated ? (
                 <div className="dropdown">
@@ -67,7 +81,10 @@ function MainNavbar({ isAuthenticated, onLogout }) {
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <button className="dropdown-item" onClick={onLogout}>
+                      <button
+                        className="dropdown-item"
+                        onClick={logoutAndClear}
+                      >
                         Logout
                       </button>
                     </li>
